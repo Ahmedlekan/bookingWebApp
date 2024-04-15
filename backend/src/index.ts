@@ -11,6 +11,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cors())
 
+// register endpoint setup
 app.use("/api/users", userRoutes)
 
 app.listen(7000, ()=>{
