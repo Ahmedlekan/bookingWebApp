@@ -18,6 +18,7 @@ router.post("/register", [
     if(!errors.isEmpty()){
         return res.status(400).json({message: errors.array()})
     }
+
     try {
         // Finding a user in the database by their email address
         let user = await User.findOne({
@@ -48,6 +49,7 @@ router.post("/register", [
             maxAge: 86400000,
         })
         return res.sendStatus(200)
+        
     } catch (error) {
         console.log(error)
         // Catching any errors that occur during the registration process
