@@ -33,7 +33,6 @@ router.post("/register", [
 
         // Creating a new User instance with the data from the request body
         user = new User(req.body);
-        
         // Saving the new user to the database
         await user.save();
 
@@ -48,7 +47,7 @@ router.post("/register", [
             secure: process.env.NODE_ENV === "production",
             maxAge: 86400000,
         })
-        return res.sendStatus(200)
+        return res.status(200).json({message: "User Registered OK"})
         
     } catch (error) {
         console.log(error)

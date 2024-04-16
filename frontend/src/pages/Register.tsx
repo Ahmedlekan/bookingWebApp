@@ -1,6 +1,7 @@
-import React from 'react'
 import {useForm} from "react-hook-form"
-
+import { useMutation } from "@tanstack/react-query";
+import * as apliClient from "../api-client"
+import { useAppContext } from "../contexts/AppContext";
 
 export type RegisterFormDataprops = {
     firstName: string;
@@ -12,9 +13,20 @@ export type RegisterFormDataprops = {
 
 const Register = () => {
     const {register, watch, handleSubmit, formState:{errors}} = useForm<RegisterFormDataprops>()
+    const {showToast} = useAppContext()
+
+    const mutation = useMutation({
+        mutationFn: apliClient.register,
+        onSuccess: ()=>{
+            showToast({message:"Registration Success!", type: "SUCCESS"})
+        },
+        onError: (error: Error)=>{
+            showToast({message: error.message, type: "ERROR"})
+        }
+    })
 
     const onSubmit = handleSubmit((data)=>{
-        console.log(data)
+        mutation.mutate(data)
     })
 
   return (
