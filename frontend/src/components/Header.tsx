@@ -1,8 +1,10 @@
-import {useState} from 'react'
+
 import { Link } from 'react-router-dom'
+import { useAppContext } from '../contexts/AppContext'
 
 const Header = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const {isLoggedIn} = useAppContext()
+
   return (
     <div className="bg-blue-800 py-6">
 
@@ -28,6 +30,7 @@ const Header = () => {
                         >
                             My Hotels
                         </Link>
+                        <button>Sign Out</button>
                     </>
                 ) : (
                     <Link
