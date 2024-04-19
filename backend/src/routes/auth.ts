@@ -11,7 +11,9 @@ router.post("/login", [
     check("email", "Email is required").isString(),
     check("password", "Password with 6 or more characters is required").isLength({min: 6})
 ], async (req: Request, res: Response)=>{
+    
     const errors = validationResult(req)
+
     if(!errors.isEmpty()){
         return res.status(400).json({message: errors.array()})
     }
@@ -47,6 +49,13 @@ router.post("/login", [
         console.log(error)
         res.status(500).json({messahe: "Something went wrong"})
     }
+})
+
+router.post("/logout", (req: Request, res: Response)=>{
+    res.cookie("auth_token", "", {
+        expires: new Date(0)
+    })
+    res.send()
 })
 
 router.get("/validate-token", verifyToken, (req: Request, res: Response)=>{
