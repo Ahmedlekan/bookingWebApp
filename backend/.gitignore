@@ -1,2 +1,5 @@
 # env
 *.env
+
+# enve2e
+*.env.e2e
