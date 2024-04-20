@@ -8,6 +8,7 @@ import cookierParser from "cookie-parser"
 
 mongoose.connect(process.env.MONGO_CONNECTION_STRING as string)
 
+
 const app = express()
 app.use(cookierParser())
 app.use(express.json())
