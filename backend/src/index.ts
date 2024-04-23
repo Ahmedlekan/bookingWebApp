@@ -5,6 +5,7 @@ import mongoose from "mongoose"
 import userRoutes from "./routes/users"
 import authRoutes from "./routes/auth"
 import cookierParser from "cookie-parser"
+import path = require("path")
 
 mongoose.connect(process.env.MONGO_CONNECTION_STRING as string)
 
@@ -17,6 +18,8 @@ app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true
 }))
+
+app.use(express.static(path.join(__dirname, "../../frontend/dist")))
 
 // register endpoint setup
 app.use("/api/users", userRoutes)
