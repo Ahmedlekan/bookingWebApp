@@ -1,6 +1,11 @@
-import React from 'react'
 import { FormProvider, useForm } from 'react-hook-form';
 import DetailSection from './DetailSection';
+import TypeSection from './TypeSection';
+import FacilitiesSection from './FacilitiesSection';
+import GuestsSection from './GuestsSection';
+import ImagesSection from './ImagesSection';
+import { useState } from 'react';
+
 
 export type HotelFormData = {
     name: string;
@@ -17,12 +22,40 @@ export type HotelFormData = {
     childCount: number;
   };
 
+  // type Props = {
+  //   hotel?: HotelType;
+  //   onSave: (hotelFormData: FormData) => void;
+  //   isLoading: boolean;
+  // };
+
 const ManageHotelForm = () => {
     const formMethods = useForm<HotelFormData>()
+    const {handleSubmit} = formMethods
+    const [isLoading, setIsLoading] = useState(false)
+
+    const onSubmit = handleSubmit((formData: HotelFormData)=>{
+      console.log(formData)
+    })
+
   return (
     <FormProvider {...formMethods}>
-        <form>
+        <form className="flex flex-col gap-10" onSubmit={onSubmit}>
             <DetailSection />
+            <TypeSection />
+            <FacilitiesSection />
+            <GuestsSection />
+            <ImagesSection />
+
+            <span className="flex justify-end">
+              <button
+                disabled={isLoading}
+                type="submit"
+                className="bg-blue-600 text-white p-2 font-bold 
+                  hover:bg-blue-500 text-xl disabled:bg-gray-500"
+              >
+                {isLoading ? "Saving..." : "Save"}
+              </button>
+        </span>
         </form>
     </FormProvider>
   )
