@@ -16,7 +16,7 @@ function App() {
         <Route path="/sign-in" element={<Layout><SignIn /></Layout>} />
 
         {isLoggedIn && (<>
-          <Route path="/my-hotels" element={<Layout ><AddHotel /></Layout>} />
+          <Route path="/add-hotel" element={<Layout ><AddHotel /></Layout>} />
           
         </>)
         }
