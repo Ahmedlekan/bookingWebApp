@@ -4,6 +4,7 @@ import {HotelType} from "../../backend/src/shared/types"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ""
 
+// connecting the register from the backend to the fronend
 export const register = async (formData: RegisterFormDataprops)=>{
     const response =  await fetch(`${API_BASE_URL}/api/users/register`, {
         method: "POST",
@@ -19,6 +20,7 @@ export const register = async (formData: RegisterFormDataprops)=>{
     }
 }
 
+// connecting the user sign in from the backend to the fronend
 export const signIn = async ( formData: SignInFormData)=>{
     const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method:"POST",
@@ -35,6 +37,7 @@ export const signIn = async ( formData: SignInFormData)=>{
     return body
 }
 
+// The validate token makes sures the user is loged in
 export const validateToken = async ()=>{
     const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {
         credentials: 'include'
@@ -46,6 +49,7 @@ export const validateToken = async ()=>{
     return response.json()
 }
 
+// connecting the user sign out from the backend to the fronend
 export const signOut = async ()=>{
     const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
         credentials: "include",
@@ -57,6 +61,7 @@ export const signOut = async ()=>{
     }
 }
 
+// connecting the backend to the frontend. Used for adding hotel to my data base
 export const addMyHotel = async (hotelFormData: FormData)=>{
     const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
         credentials: "include",
@@ -70,6 +75,7 @@ export const addMyHotel = async (hotelFormData: FormData)=>{
     return response.json()
 }
 
+// connecting the backend to the frontend. For fetching the list of the hotels added from the data base
 export const fetchMyHotel = async (): Promise<HotelType[]> =>{
     const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
         credentials: "include",
@@ -80,6 +86,47 @@ export const fetchMyHotel = async (): Promise<HotelType[]> =>{
     }
     return response.json()
 }
+
+// connecting the backend to the frontend. For editing my hotel
+export const editMyHotel = async (): Promise<HotelType[]> =>{
+    const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
+        credentials: "include",
+    })
+
+    if(!response.ok){
+        throw new Error("Error fetching hotels")
+    }
+    return response.json()
+}
+
+// for fetching my hotel by its hotelId
+export const fetchMyHotelById = async (hotelId: string): Promise<HotelType> =>{
+    const response = await fetch(`${API_BASE_URL}/api/my-hotels/${hotelId}`, {
+        credentials: "include",
+    })
+
+    if(!response.ok){
+        throw new Error("Error fetching hotels")
+    }
+    return response.json()
+}
+
+// updating the hotel by each hotelId
+export const updateMyHotelById = async (hotelFormData: FormData) =>{
+    const response =  await fetch(`${API_BASE_URL}/api/my-hotels/${hotelFormData.get("hotelId")}`, {
+        method: "PUT",
+        body: hotelFormData,
+        credentials:"include"
+    })
+
+    if(!response.ok){
+        throw new Error("Failed to edit hotelId")
+    }
+    return response.json()
+
+}
+
+
 
 
 

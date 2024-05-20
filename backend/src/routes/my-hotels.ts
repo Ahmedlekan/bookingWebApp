@@ -18,7 +18,7 @@ const upload = multer({
     }
 })
 
-//only the login user can access this endpoint
+//only the login user can access this endpoint. Add hotel
 router.post("/",
     verifyToken,
     [
@@ -36,21 +36,10 @@ router.post("/",
             // Get the array of uploaded image files from the request
             const imageFiles = req.files as Express.Multer.File[]
             // Get any additional data about the hotel from the request body
-            const newHotel: HotelType = req.body 
+            const newHotel: HotelType = req.body
 
-            // Upload the images to Cloudinary
-            const uploadPromises = imageFiles.map(async (image) => {
-                // Convert the image buffer to a base64-encoded string
-                const b64 = Buffer.from(image.buffer).toString("base64")
-                // Construct a data URI with the image's MIME type
-                let dataURI = "data:" + image.mimetype + ";base64," + b64;
-                // Upload the image to Cloudinary and await the response
-                const res = await cloudinary.v2.uploader.upload(dataURI)
-                // Return the URL of the uploaded image
-                return res.url
-            })
-            // Wait for all image upload promises to resolve
-            const imageUrls = await Promise.all(uploadPromises)
+            // uploading the image to cloudinary
+            const imageUrls = await uploadImages(imageFiles)
             
             //if the upload was successful add the imageUrls to the newHotel
             newHotel.imageUrls = imageUrls
@@ -68,8 +57,8 @@ router.post("/",
         }
 })
 
+//only the login user can access this endpoint. For fetching the list of added hotel
 router.get("/", verifyToken, async (req: Request, res: Response)=>{
-
     try {
         const hotels = await Hotel.find({userId: req.userId})
         res.json(hotels)
@@ -77,6 +66,67 @@ router.get("/", verifyToken, async (req: Request, res: Response)=>{
         res.status(500).json({message: "Error fetching hotels"})   
     }
 })
+
+//only the login user can access this endpoint. To get the id of each hotel from the list of added hotel
+router.get("/:id", verifyToken, async (req: Request, res: Response) => {
+  const id = req.params.id.toString();
+  try {
+    const hotel = await Hotel.findOne({
+      _id: id,
+      userId: req.userId,
+    });
+    res.json(hotel);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching hotels" });
+  }
+});
+
+//only the login user can access this endpoint. For updating each hotel with its images
+router.put("/:hotelId", verifyToken, upload.array("imageFiles"), async(req:Request, res:Response)=>{
+    
+    try {
+        const updatedHotel: HotelType = req.body
+        updatedHotel.lastUpdated = new Date()
+
+        const hotel = await Hotel.findOneAndUpdate({
+            _id: req.params.hotelId,
+            userId: req.userId
+        }, updatedHotel, {new:true})
+
+        if (!hotel){
+            return res.status(404).json({message:"Hotel not found "})
+        }
+
+        const files = req.files as Express.Multer.File[]
+        const updatedImageUrls = await uploadImages(files)
+
+        hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || []) ]
+
+        await hotel.save()
+        res.status(201).json(hotel)
+
+    } catch (error) {
+        res.status(500).json({message: "Sometging went wrong"})
+    }
+})
+
+const  uploadImages = async (imageFiles: Express.Multer.File[])=>{
+    // Upload the images to Cloudinary
+    const uploadPromises = imageFiles.map(async (image) => {
+        // Convert the image buffer to a base64-encoded string
+        const b64 = Buffer.from(image.buffer).toString("base64")
+        // Construct a data URI with the image's MIME type
+        let dataURI = "data:" + image.mimetype + ";base64," + b64;
+        // Upload the image to Cloudinary and await the response
+        const res = await cloudinary.v2.uploader.upload(dataURI)
+        // Return the URL of the uploaded image
+        return res.url
+    })
+    // Wait for all image upload promises to resolve
+    const imageUrls = await Promise.all(uploadPromises)
+
+    return imageUrls
+}
 
 export default router
 

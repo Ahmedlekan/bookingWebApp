@@ -7,7 +7,6 @@ const AddHotel = () => {
   const {showToast} = useAppContext()
 
   const {mutate, isPending} = useMutation( {
-    
     mutationFn: apiClient.addMyHotel,
     onSuccess: async () => {
       showToast({ message: "Hotel Saved!", type: "SUCCESS" });
