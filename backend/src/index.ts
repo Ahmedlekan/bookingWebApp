@@ -8,6 +8,7 @@ import cookierParser from "cookie-parser"
 import path = require("path")
 import {v2 as cloudinary} from 'cloudinary';
 import myHotelsRoutes from "./routes/my-hotels"
+import hotelRoutes from "./routes/hotels"
 
 
 cloudinary.config({ 
@@ -33,8 +34,10 @@ app.use(express.static(path.join(__dirname, "../../frontend/dist")))
 app.use("/api/users", userRoutes)
 // login endpoint setup
 app.use("/api/auth", authRoutes)
-// add hotel endpoint setup
+// add my-hotels endpoint setup
 app.use("/api/my-hotels", myHotelsRoutes)
+// add hotels endpoint setup
+app.use("/api/hotels", hotelRoutes)
 
 app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
