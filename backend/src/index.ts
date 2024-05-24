@@ -36,7 +36,7 @@ app.use("/api/users", userRoutes)
 app.use("/api/auth", authRoutes)
 // add my-hotels endpoint setup
 app.use("/api/my-hotels", myHotelsRoutes)
-// add hotels endpoint setup
+// list all my hotels from data base endpoint setup
 app.use("/api/hotels", hotelRoutes)
 
 app.get("*", (req: Request, res: Response) => {

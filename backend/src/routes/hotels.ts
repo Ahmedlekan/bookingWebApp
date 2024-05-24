@@ -9,7 +9,7 @@ router.get("/search", async (req:Request, res:Response)=>{
         const pageSize = 5
         const pageNumber = parseInt(req.query.page ? req.query.page.toString() : '1')
         const skip = (pageNumber -1) * pageSize
-
+        
         // list all the total hotels from the data base
         const hotels = await Hotel.find().skip(skip).limit(pageSize)
 

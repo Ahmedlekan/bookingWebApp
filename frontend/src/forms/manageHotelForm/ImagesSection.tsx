@@ -41,13 +41,15 @@ const ImagesSection = () => {
           className="w-full text-gray-700 font-normal"
           {...register("imageFiles", {
             validate:(imageFiles)=>{
-              const totalLength = imageFiles.length + (existingImageUrls.length || 0)
+              const totalLength = imageFiles.length + (existingImageUrls?.length || 0)
               if(totalLength === 0){
                 return "Atlest one image should be added"
               }
               if(totalLength > 6){
                 return "Total number of images cannot be more than 6"
               }
+
+              return true
             }
           })} 
         />
