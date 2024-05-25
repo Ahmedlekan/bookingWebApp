@@ -33,6 +33,16 @@ const Search = () => {
     queryFn: ()=> apiClient.searchHotels(searchParams),
   })
 
+  const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const starRating = event.target.value;
+
+    setSelectedStars((prevStars) =>
+      event.target.checked
+        ? [...prevStars, starRating]
+        : prevStars.filter((star) => star !== starRating)
+    );
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
         
@@ -44,7 +54,7 @@ const Search = () => {
                 </h3>
                 <StarRatingFilter
                     selectedStars={selectedStars}
-                    onChange={()=>{}}
+                    onChange={handleStarsChange}
                 />
                 <HotelTypesFilter
                     selectedHotelTypes={selectedHotelTypes}
