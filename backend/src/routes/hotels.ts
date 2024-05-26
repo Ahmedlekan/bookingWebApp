@@ -1,4 +1,4 @@
-import express, {query, Request, Response} from "express"
+import express, {Request, Response} from "express"
 import Hotel from "../models/hotel"
 import { HotelSearchResponse } from "../shared/types"
 
@@ -77,12 +77,13 @@ const constructSearchQuery = (queryParams: any)=>{
         }
     }
 
-    if(queryParams.types){
-        constructedQuery.types = {
-            $in: Array.isArray(queryParams.types)
-            ? queryParams.types : [queryParams.types]
-        }
-    }
+    if (queryParams.types) {
+        constructedQuery.type = {
+          $in: Array.isArray(queryParams.types)
+            ? queryParams.types
+            : [queryParams.types],
+        };
+      }
 
     if(queryParams.stars){
         const starRatings = Array.isArray(queryParams.stars)
@@ -91,6 +92,8 @@ const constructSearchQuery = (queryParams: any)=>{
 
         constructedQuery.starRatings = {$in: starRatings}
     }
+
+
 
     if(queryParams.maxPrice){
         constructedQuery.pricePerNight = {

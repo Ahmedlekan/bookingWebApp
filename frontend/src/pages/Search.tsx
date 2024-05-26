@@ -25,7 +25,11 @@ const Search = () => {
     checkOut: search.checkOut.toISOString(),
     adultCount: search.adultCount.toString(),
     childCount: search.childCount.toString(),
-    page: page.toString()
+    page: page.toString(),
+    stars: selectedStars,
+    types: selectedHotelTypes,
+    facilities: selectedFacilities,
+    maxPrice: selectedPrice?.toString(),
   }
 
   const {data: hotelData} = useQuery({
@@ -43,6 +47,27 @@ const Search = () => {
     );
   };
 
+  const hotelTypesChange = (event: React.ChangeEvent<HTMLInputElement>)=>{
+    const hotelType = event.target.value
+
+    setSelectedHotelTypes( (prevTypes) =>
+        event.target.checked
+        ? [...prevTypes, hotelType]
+        : prevTypes.filter((type)=> type !== hotelType)
+    )
+  }
+
+  const hotelFacilitiesChange = (event: React.ChangeEvent<HTMLInputElement>)=>{
+    const hotelFacility = event.target.value
+
+    setSelectedFacilities((prevFacilities) =>
+        event.target.checked
+        ? [...prevFacilities, hotelFacility]
+        : prevFacilities.filter((facility) => facility !== hotelFacility)
+    )
+  }
+  
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[250px_1fr] gap-5">
         
@@ -58,15 +83,15 @@ const Search = () => {
                 />
                 <HotelTypesFilter
                     selectedHotelTypes={selectedHotelTypes}
-                    onChange={()=>{}}
+                    onChange={hotelTypesChange}
                 />
                 <FacilitiesFilter
                     selectedFacilities={selectedFacilities}
-                    onChange={()=>{}}
+                    onChange={hotelFacilitiesChange}
                 />
                 <PriceFilter
                     selectedPrice={selectedPrice}
-                    onChange={()=>{}}
+                    onChange={(value?:number)=> setSelectedPrice(value)}
                 />
             </div>
         </div>
