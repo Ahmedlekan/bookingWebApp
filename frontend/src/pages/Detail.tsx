@@ -5,7 +5,7 @@ import { AiFillStar } from "react-icons/ai";
 import { useParams } from 'react-router-dom';
 import GuestInfoForm from "../forms/guestInfoForm/GuestInfoForm";
 
-const Details = () => {
+const Detail = () => {
     const {hotelId} = useParams()
 
     const {data : hotel} = useQuery({
@@ -25,8 +25,8 @@ const Details = () => {
                 { Array.from({length: hotel.starRating}).map(()=>(
                     <AiFillStar className="fill-yellow-400" />
                 )) }
-                <h1 className="text-3xl font-bold">{hotel.name}</h1>
             </span>
+            <h1 className="text-3xl font-bold">{hotel.name}</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -54,7 +54,7 @@ const Details = () => {
                 {hotel.description}
             </div>
             <div className=" h-fit">
-                <GuestInfoForm />
+                <GuestInfoForm pricePerNight={hotel.pricePerNight} hotelId={hotel._id} />
             </div>
         </div>
 
@@ -62,4 +62,4 @@ const Details = () => {
   )
 }
 
-export default Details
+export default Detail
