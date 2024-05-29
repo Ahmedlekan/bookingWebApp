@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form"
 import DatePicker from "react-datepicker";
 import { useAppContext } from "../../contexts/AppContext";
 import { useSearchContext } from "../../contexts/SearchContext";
+import {useLocation, useNavigate} from "react-router-dom";
 
 type GuestInfoFormProps = {
     hotelId: string
@@ -18,6 +19,8 @@ type GuestInfoFormData = {
 const GuestInfoForm = ({hotelId, pricePerNight}: GuestInfoFormProps) => {
     const {isLoggedIn} = useAppContext()
     const search = useSearchContext()
+    const navigate = useNavigate()
+    const location = useLocation()
 
     const {watch, register, handleSubmit, setValue, formState:{errors}} = useForm<GuestInfoFormData>({
         defaultValues:{
@@ -34,12 +37,36 @@ const GuestInfoForm = ({hotelId, pricePerNight}: GuestInfoFormProps) => {
     const minDate = new Date();
     const maxDate = new Date();
     maxDate.setFullYear(maxDate.getFullYear() + 1);
+
+    const onSignInClick = (data: GuestInfoFormData)=>{
+        search.saveSearchValues(
+            "",
+            data.checkIn, 
+            data.checkOut, 
+            data.adultCount, 
+            data.childCount,
+            ""
+        )
+        navigate("/sign-in", {state: {from: location}})
+    }
+    
+    const onSubmit = (data: GuestInfoFormData)=>{
+        search.saveSearchValues(
+            "",
+            data.checkIn, 
+            data.checkOut, 
+            data.adultCount, 
+            data.childCount,
+            ""
+        )
+        navigate(`/hotel/${hotelId}/booking`)
+    }
     
   return (
     <div className="flex flex-col p-4 bg-blue-200 gap-4">
         <h3 className="text-md font-bold">£{pricePerNight}</h3>
 
-        <form action="">
+        <form onSubmit={ isLoggedIn ? handleSubmit(onSubmit) : handleSubmit(onSignInClick) }>
             <div className="grid grid-cols-1 gap-4 items-center">
                 <div>
                     <DatePicker
