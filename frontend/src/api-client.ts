@@ -1,8 +1,19 @@
 import { RegisterFormDataprops } from "./pages/Register"
 import { SignInFormData } from "./pages/SignIn"
-import {HotelSearchResponse, HotelType} from "../../backend/src/shared/types"
+import {HotelSearchResponse, HotelType, UserType} from "../../backend/src/shared/types"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ""
+
+// connecting the current user from the backend to the fronend
+export const fetchCurrentUser = async ():Promise<UserType> => {
+    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+        credentials: "include"
+    })
+    if(!response.ok){
+        throw new Error("Error fetching user")
+    }
+     return response.json()
+}
 
 // connecting the register from the backend to the fronend
 export const register = async (formData: RegisterFormDataprops)=>{

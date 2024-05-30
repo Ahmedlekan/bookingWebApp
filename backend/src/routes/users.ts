@@ -2,9 +2,27 @@ import express,{Response, Request} from "express"
 import User from "../models/user"
 import jwt from "jsonwebtoken"
 import {check, validationResult} from "express-validator"
+import verifyToken from "../middleware/auth";
 
 // Creating a router instance from the Express Router
 const router = express.Router();
+
+router.get("/me", verifyToken, async (req:Request, res: Response)=>{
+    const userId = req.userId
+
+    try {
+        const user = await User.findById(userId).select("-password")
+        if(!user){
+            return res.status(400).json({message: "User not found"})
+        }
+
+        res.json(user)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({messsage: "Something went wrong"})
+    }
+})
 
 // Creating a POST route for user registration & the middleware
 // /api/users/register
