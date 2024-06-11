@@ -18,10 +18,10 @@ const EditHotel = () => {
       mutationFn: apiClient.updateMyHotelById,
       onSuccess: async () => {
         showToast({ message: "Hotel Updated!", type: "SUCCESS" });
-        },
-        onError: (error: Error) => {
-          showToast({ message: error.message, type: "ERROR" });
-        },
+      },
+      onError: (error: Error) => {
+        showToast({ message: error.message, type: "ERROR" });
+      },
     });
 
     const handleSave = (hotelFormData: FormData)=>{

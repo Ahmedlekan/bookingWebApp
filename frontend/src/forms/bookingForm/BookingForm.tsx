@@ -1,31 +1,86 @@
-import { UserType } from '../../../../backend/src/shared/types'
+import { PaymentIntentResponse, UserType } from '../../../../backend/src/shared/types'
 import {useForm} from "react-hook-form"
-import { useState } from 'react'
-import CardElement from '../../components/CardElement'
+import { CardElement } from '@stripe/react-stripe-js'
+import { useStripe, useElements } from '@stripe/react-stripe-js'
+import { StripeCardElement } from '@stripe/stripe-js'
+import { useSearchContext } from '../../contexts/SearchContext'
+import { useParams } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import * as apiClient from "../../api-client"
+import { useAppContext } from '../../contexts/AppContext'
 
 
 type BookingFormProps = {
     currentUser: UserType
+    paymentIntent: PaymentIntentResponse 
 }
 
-type BookingFormData = {
+export type BookingFormData = {
     firstName: string
     lastName: string
     email:string
+    childCount: number
+    adultCount:number
+    checkIn: string
+    checkOut: string
+    hotelId: string
+    paymentIntentId: string,
+    totalCost: number
 }
 
-const BookingForm = ({currentUser}: BookingFormProps) => {
+const BookingForm = ({currentUser, paymentIntent}: BookingFormProps) => {
+    const search = useSearchContext()
+    const {hotelId} = useParams()
+    const {showToast} = useAppContext()
+
+    const {mutate: BookRoom, isPending} = useMutation({
+        mutationFn: apiClient.createRoomBooking,
+        onSuccess: () => {
+            showToast({message:"Booking Saves!", type: "SUCCESS"})
+        },
+        onError:()=>{
+            showToast({message:"Error saving booking", type:"ERROR"})
+        }
+    })
+
     const {register, handleSubmit} = useForm<BookingFormData>({
         defaultValues:{
             firstName: currentUser.firstName,
             lastName: currentUser.lastName,
-            email: currentUser.email
+            email: currentUser.email,
+            childCount: search.childCount,
+            adultCount: search.adultCount,
+            checkIn: search.checkIn.toISOString(),
+            checkOut: search.checkOut.toISOString(),
+            hotelId: hotelId,
+            totalCost: paymentIntent.totalCost,
+            paymentIntentId: paymentIntent.paymentIntentId
         }
     })
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    
+    const stripe = useStripe()
+    const elements = useElements()
+
+    const onSubmit = async (formData: BookingFormData)=>{
+        
+        if(!stripe || !elements){
+            return
+        }
+        
+        const result  = await stripe?.confirmCardPayment(paymentIntent.clientSecret, {
+            payment_method:{
+                card: elements.getElement(CardElement) as StripeCardElement
+            }
+        })
+
+        if(result.paymentIntent?.status === "succeeded"){
+           BookRoom({ ...formData, paymentIntentId: result.paymentIntent.id })
+        }
+    }
 
   return (
-    <form onSubmit={()=>{}} className="grid grid-cols-1 gap-5 rounded-lg 
+    <form onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-1 gap-5 rounded-lg 
         border border-slate-300 p-5"
     >
         <span className="text-3xl font-bold">Confirm Your Details</span>
@@ -79,7 +134,7 @@ const BookingForm = ({currentUser}: BookingFormProps) => {
 
             <div className="bg-blue-200 p-4 rounded-md">
                 <div className="font-semibold text-lg">
-                    Total Cost: £
+                    Total Cost: £{paymentIntent.totalCost.toFixed(2)}
                 </div>
                 <div className="text-xs">Includes taxes and charges</div>
             </div>
@@ -95,12 +150,12 @@ const BookingForm = ({currentUser}: BookingFormProps) => {
 
         <div className="flex justify-end">
             <button
-                disabled={isLoading}
+                disabled={isPending}
                 type="submit"
                 className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 
                     text-md disabled:bg-gray-500"
             >
-            {isLoading ? "Saving..." : "Confirm Booking"}
+            {isPending ? "Saving..." : "Confirm Booking"}
             </button>
         </div>
 
