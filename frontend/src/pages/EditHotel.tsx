@@ -6,14 +6,17 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 
 const EditHotel = () => {
     const {showToast} = useAppContext()
+    //get the hotelId from the url
     const {hotelId} = useParams()
     
+    //fetch the hotel you want to edit
     const {data: hotel} = useQuery({
         queryKey:['fetchMyHotelId'],
         queryFn: () => apiClient.fetchMyHotelById(hotelId || ""),
         enabled: !!hotelId,
     })
 
+    // update the hotel after editing
     const {mutate, isPending} = useMutation( {
       mutationFn: apiClient.updateMyHotelById,
       onSuccess: async () => {

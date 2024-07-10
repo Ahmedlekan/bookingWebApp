@@ -30,12 +30,11 @@ router.post("/",
         body("pricePerNight").notEmpty().isNumeric().withMessage("Price per night is required & must be number"),
         body("facilities").notEmpty().isArray().withMessage("Facilities are required"),
     ],
-    upload.array("imageFiles", 6), 
+    upload.array("imageFiles", 6), // expect imageFiles which will be up to 6 images
     async (req:Request, res:Response)=>{
         try {
             // Get the array of uploaded image files from the request
             const imageFiles = req.files as Express.Multer.File[]
-            // Get any additional data about the hotel from the request body
             const newHotel: HotelType = req.body
 
             // uploading the image to cloudinary
@@ -60,6 +59,7 @@ router.post("/",
 //only the login user can access this endpoint. For fetching the list of added hotel
 router.get("/", verifyToken, async (req: Request, res: Response)=>{
     try {
+        //fetch all the hotels with auserId
         const hotels = await Hotel.find({userId: req.userId})
         res.json(hotels)
     } catch (error) {
@@ -67,7 +67,7 @@ router.get("/", verifyToken, async (req: Request, res: Response)=>{
     }
 })
 
-//only the login user can access this endpoint. To get the id of each hotel from the list of added hotel
+//only the login user can access this endpoint. GET a single hotel from the list of added hotel
 router.get("/:id", verifyToken, async (req: Request, res: Response) => {
   const id = req.params.id.toString();
   try {
@@ -81,7 +81,7 @@ router.get("/:id", verifyToken, async (req: Request, res: Response) => {
   }
 });
 
-//only the login user can access this endpoint. For updating each hotel with its images
+//only the login user can access this endpoint. For updating the hotel with its images
 router.put("/:hotelId", verifyToken, upload.array("imageFiles"), async(req:Request, res:Response)=>{
     
     try {
@@ -99,7 +99,7 @@ router.put("/:hotelId", verifyToken, upload.array("imageFiles"), async(req:Reque
 
         const files = req.files as Express.Multer.File[]
         const updatedImageUrls = await uploadImages(files)
-
+        // update imageUrls and existing imageUrls
         hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || []) ]
 
         await hotel.save()

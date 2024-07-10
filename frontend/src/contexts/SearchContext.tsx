@@ -43,6 +43,7 @@ export const SearchContextProvider = ({children}: SearchContextProps)=> {
             setHotelId(hotelId)
         }
 
+        // Save data to sessionStorage
         sessionStorage.setItem("destination", destination)
         sessionStorage.setItem("checkIn", checkIn.toISOString())
         sessionStorage.setItem("checkOut", checkOut.toISOString())

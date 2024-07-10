@@ -5,8 +5,10 @@ const ImagesSection = () => {
   
   const {register,formState: { errors }, watch,setValue} = useFormContext<HotelFormData>();
   
-  const existingImageUrls = watch('imageUrls')
+  //displaying each image url
+  const existingImageUrls = watch("imageUrls")
 
+  //remove imageUrl from the existingImageUrls and save it back to the form
   const handleDelete = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>, 
     imageUrl: string)=>{

@@ -29,6 +29,7 @@ export type HotelFormData = {
   };
 
 const ManageHotelForm = ({onSave, isLoading, hotel}: Props) => {
+  // all the data from the useForm spread to the formProvider
     const formMethods = useForm<HotelFormData>()
     const {handleSubmit, reset} = formMethods
 
@@ -38,7 +39,7 @@ const ManageHotelForm = ({onSave, isLoading, hotel}: Props) => {
 
     const onSubmit = handleSubmit((formDataJson: HotelFormData)=>{
       const formData = new FormData()
-      // if we are in edit mode, we want to hotelId to the form data
+      // if we are in edit mode, we want to add hotelId to the form data
       if (hotel){
         formData.append("hotelId", hotel._id)
       }
@@ -57,7 +58,7 @@ const ManageHotelForm = ({onSave, isLoading, hotel}: Props) => {
         formData.append(`facilities[${index}]`, facility)
       })
 
-      // Append image URLs. This ensures that both image files and image URLs are included in the FormData object.
+      // Append image URLs. The updated imageUrls
       if (formDataJson.imageUrls){
         formDataJson.imageUrls.forEach((url, index)=>{
           formData.append(`imageUrls[${index}]`, url)

@@ -19,6 +19,7 @@ const Search = () => {
   const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
   const [sortOption, setSortOption] = useState<string>("");
 
+  //taking what the usaul search into our searcHotels
   const searchParams = {
     destination: search.destination,
     checkIn: search.checkIn.toISOString(),
@@ -38,6 +39,7 @@ const Search = () => {
     queryFn: ()=> apiClient.searchHotels(searchParams),
   })
 
+  // adding and removing the checked and unchecked stars
   const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const starRating = event.target.value;
 
@@ -48,6 +50,7 @@ const Search = () => {
     );
   };
 
+  // adding and removing the type and unchecked type
   const hotelTypesChange = (event: React.ChangeEvent<HTMLInputElement>)=>{
     const hotelType = event.target.value
 
@@ -58,6 +61,7 @@ const Search = () => {
     )
   }
 
+  // adding and removing the facilities and unchecked facilities 
   const hotelFacilitiesChange = (event: React.ChangeEvent<HTMLInputElement>)=>{
     const hotelFacility = event.target.value
 

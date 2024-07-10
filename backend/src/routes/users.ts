@@ -32,7 +32,9 @@ router.post("/register", [
     check("email", "Email is required").isEmail(),
     check("password", "password with 6 or more character required").isLength({min: 6})
 ], async (req: Request, res: Response) => {
+    
     const errors = validationResult(req)
+    
     if(!errors.isEmpty()){
         return res.status(400).json({message: errors.array()})
     }
@@ -54,12 +56,14 @@ router.post("/register", [
         // Saving the new user to the database
         await user.save();
 
+        //JSON web token
         const token = jwt.sign(
             {userId: user.id}, 
             process.env.JWT_SECRET_KEY as string, 
             {expiresIn:"1d"}
         )
         
+        // and then set it as an HTTP-only cookie in the response
         res.cookie("auth_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

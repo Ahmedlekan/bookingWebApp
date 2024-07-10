@@ -1,6 +1,6 @@
 import express, {Request, Response} from "express"
 import Hotel from "../models/hotel"
-import { BookingType, HotelSearchResponse } from "../shared/types"
+import { BookingType, HotelSearchResponse, HotelType } from "../shared/types"
 import { param, validationResult } from "express-validator"
 import Stripe from "stripe"
 import verifyToken from "../middleware/auth"
@@ -35,7 +35,7 @@ router.get("/search", async (req:Request, res:Response)=>{
         // list all the total hotels from the data base
         const hotels = await Hotel.find(query).sort(sortOptions).skip(skip).limit(pageSize)
         const total = await Hotel.countDocuments(query)
-
+        // return the resposnse to the front end with its pagination
         const response: HotelSearchResponse = {
             data: hotels,
             pagination:{
@@ -212,8 +212,6 @@ const constructSearchQuery = (queryParams: any)=>{
 
         constructedQuery.starRatings = {$in: starRatings}
     }
-
-
 
     if(queryParams.maxPrice){
         constructedQuery.pricePerNight = {
