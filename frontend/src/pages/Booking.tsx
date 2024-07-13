@@ -14,10 +14,11 @@ const Booking = () => {
     const [numberOfNights, setNumberOfNights] = useState<number>(0);
     const {stripePromise} = useAppContext()
 
+    // we want to make sure that whenever the checkin and checkout changes from the
+    // global state, the price per nights all so changes 
     useEffect(()=>{
         if(search.checkIn && search.checkOut){
             const nights = Math.abs(search.checkOut.getTime() - search.checkIn.getTime() ) / (1000 * 60 * 60 * 24)
-
             setNumberOfNights(Math.ceil(nights))
         }   
     }, [search.checkIn, search.checkOut])
@@ -33,9 +34,7 @@ const Booking = () => {
         queryFn: ()=> apiClient.createPaymentIntent(hotelId as string, numberOfNights.toString()),
         enabled: !! hotelId && numberOfNights > 0
     })
-
-    console.log(paymentIntentData)
-
+    
     const {data: currentUser} = useQuery({
         queryKey:["currentUser"],
         queryFn: ()=> apiClient.fetchCurrentUser()

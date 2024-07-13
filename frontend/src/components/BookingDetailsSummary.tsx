@@ -1,6 +1,5 @@
 import { HotelType } from "../../../backend/src/shared/types";
 
-
 type BookingDetailsSummaryProps = {
     checkIn: Date;
     checkOut: Date;

@@ -7,10 +7,12 @@ import verifyToken from "../middleware/auth";
 // Creating a router instance from the Express Router
 const router = express.Router();
 
+//get the current user
 router.get("/me", verifyToken, async (req:Request, res: Response)=>{
     const userId = req.userId
 
     try {
+        //user without password
         const user = await User.findById(userId).select("-password")
         if(!user){
             return res.status(400).json({message: "User not found"})

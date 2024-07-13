@@ -9,6 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_API_KEY as string)
 
 const router = express.Router()
 
+//search hotel
 router.get("/search", async (req:Request, res:Response)=>{
     try {
 
@@ -53,6 +54,7 @@ router.get("/search", async (req:Request, res:Response)=>{
     }
 })
 
+// hotel detail page end point
 router.get("/:id", [
     param("id").notEmpty().withMessage("Hotel ID is required")
 ], async(req:Request, res: Response)=>{
@@ -73,6 +75,7 @@ router.get("/:id", [
     }
 })
 
+// payment invoice or payment intent
 router.post("/:hotelId/bookings/payment-intent",
   verifyToken,
   async (req: Request, res: Response)=>{
@@ -113,7 +116,6 @@ router.post("/:hotelId/bookings/payment-intent",
 
 })
 
-
 router.post(
     "/:hotelId/bookings",
     verifyToken,
@@ -124,11 +126,11 @@ router.post(
         const paymentIntent = await stripe.paymentIntents.retrieve(
           paymentIntentId as string
         );
-  
+        //checking if the paymentIntent is not found
         if (!paymentIntent) {
           return res.status(400).json({ message: "payment intent not found" });
         }
-  
+        // checking if the metadata hotelId and userId are the same  
         if (
           paymentIntent.metadata.hotelId !== req.params.hotelId ||
           paymentIntent.metadata.userId !== req.userId
@@ -141,7 +143,7 @@ router.post(
             message: `payment intent not succeeded. Status: ${paymentIntent.status}`,
           });
         }
-  
+        // create a new booking
         const newBooking: BookingType = {
           ...req.body,
           userId: req.userId,
@@ -157,7 +159,6 @@ router.post(
         if (!hotel) {
           return res.status(400).json({ message: "hotel not found" });
         }
-  
         await hotel.save();
         res.status(200).send();
       } catch (error) {

@@ -33,7 +33,7 @@ const BookingForm = ({currentUser, paymentIntent}: BookingFormProps) => {
     const {hotelId} = useParams()
     const {showToast} = useAppContext()
 
-    const {mutate: BookRoom, isPending} = useMutation({
+    const {mutate: bookRoom, isPending} = useMutation({
         mutationFn: apiClient.createRoomBooking,
         onSuccess: () => {
             showToast({message:"Booking Saves!", type: "SUCCESS"})
@@ -67,14 +67,14 @@ const BookingForm = ({currentUser, paymentIntent}: BookingFormProps) => {
             return
         }
         
-        const result  = await stripe?.confirmCardPayment(paymentIntent.clientSecret, {
+        const result  = await stripe.confirmCardPayment(paymentIntent.clientSecret, {
             payment_method:{
                 card: elements.getElement(CardElement) as StripeCardElement
             }
         })
 
         if(result.paymentIntent?.status === "succeeded"){
-           BookRoom({ ...formData, paymentIntentId: result.paymentIntent.id })
+           bookRoom({ ...formData, paymentIntentId: result.paymentIntent.id })
         }
     }
 
