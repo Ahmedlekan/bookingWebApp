@@ -238,8 +238,10 @@ export const fetchMyBookings = async ():Promise<HotelType[]> =>{
         throw new Error("Unable to fetch bookings");
         
     }
-    
-    return response.json()
+
+    const data = await response.json();
+    console.log('Fetched bookings:', data); // Add this line to debug
+    return data;
 }
 
 

@@ -34,13 +34,28 @@ const Header = () => {
                         <SignOutBtn />
                     </>
                 ) : (
-                    <Link
-                    to="/sign-in"
-                    className="flex bg-white items-center text-blue-600 
-                        px-3 font-bold hover:bg-gray-100"
-                    >
-                        Sign In
-                    </Link>
+                    <div className=' flex gap-5 justify-center items-center'>
+                        <Link
+                            to="/"
+                            className="items-center text-white text-xl"
+                            >
+                                List your property
+                        </Link>
+                        <Link
+                            to="/register"
+                            className="bg-white items-center text-blue-600 
+                                px-3 py-2  hover:bg-gray-100 rounded-md text-lg"
+                            >
+                                Register
+                        </Link>
+                        <Link
+                            to="/sign-in"
+                            className="bg-white items-center text-blue-600 
+                                px-3 py-2 text-lg hover:bg-gray-100 rounded-md"
+                            >
+                                Sign In
+                        </Link>
+                    </div>
                 )}
             </span>
 

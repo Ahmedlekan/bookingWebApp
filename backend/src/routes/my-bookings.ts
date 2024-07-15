@@ -10,7 +10,7 @@ router.get("/", verifyToken, async (req:Request, res:Response)=>{
     try {
         // this will fetch all the bookings
         const hotels = await Hotel.find({
-            bookings:{$eleMatch:{ userId: req.userId }}
+            bookings:{$elemMatch:{ userId: req.userId }}
         }) 
         // for getting the bookings of a userId
         const results = hotels.map((hotel)=>{
