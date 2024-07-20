@@ -11,7 +11,7 @@ const Header = () => {
 
         <div className="container mx-auto flex justify-between">
             <span className="text-3xl text-white font-bold tracking-tight">
-            <Link to="/">MernHolidays.com</Link>
+            <Link to="/">Diplo.com</Link>
             </span>
 
             <span className="flex space-x-2">

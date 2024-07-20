@@ -1,9 +1,19 @@
-import React from 'react'
 import img from "../assets/bg-1.jpeg"
 import Quick from '../components/Quick'
 import Trending from '../components/Trending'
+import GuestLoveCard from "../components/GuestLoveCard"
+import * as apiClient from "../api-client"
+import { useQuery } from "@tanstack/react-query"
 
 const HomePage = () => {
+    const {data: hotels} = useQuery({
+        queryKey:["fetchQuery"],
+        queryFn: ()=> apiClient.fetchHotels()
+    })
+
+    const guestLoves = hotels?.slice(0, 4) || []
+    const uniqueProperties = hotels?.slice?.(4, 8) || []
+
   return (
     <div className='flex flex-col gap-5'>
         <h2 className='text-xl lg:text-4xl font-bold'>Offers</h2>
@@ -11,7 +21,7 @@ const HomePage = () => {
         
         <div className="relative w-full h-54 rounded-md overflow-hidden">
             <img
-                src={img} // replace with your image URL
+                src={img}
                 alt="Background"
                 className="absolute inset-0 w-full h-full object-cover rounded-md"
             />
@@ -28,8 +38,28 @@ const HomePage = () => {
             </div>
         </div>
 
-        <Quick />
-        <Trending />
+        <div>
+            <Quick />
+            <Trending />
+            <div className="mt-10">
+                <h2 className=" text-xl lg:text-3xl font-bold mb-5">Home guest love</h2>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                    {guestLoves.map((hotel) => (
+                        <GuestLoveCard key={hotel._id} hotel={hotel} />
+                    ))}
+                </div>
+            </div>
+            
+            <div className="mt-10">
+                <h2 className=" text-xl lg:text-3xl font-bold mb-5">Stay at our top unique properties</h2>
+                <p className=" mb-3 text-gray-500 text-lg">From castles and villas to boats and igloos, we have it all</p>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                    {uniqueProperties.map((hotel) => (
+                        <GuestLoveCard key={hotel._id} hotel={hotel} />
+                    ))}
+                </div>
+            </div>
+        </div>
     </div>
   )
 }

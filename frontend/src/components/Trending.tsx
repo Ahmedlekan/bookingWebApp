@@ -1,4 +1,3 @@
-import React from 'react'
 import lagos from "../assets/lagos.jpg"
 import ibadan from "../assets/ibadan.jpg"
 import enugu from "../assets/enugu.jpg"
@@ -13,7 +12,7 @@ const Trending = () => {
         <p className='text-lg lg:text-xl text-gray-500'>Most popular choices for travellers from Nigeria</p>
 
         <div className='flex flex-col gap-5'>
-            <div className='flex gap-5'>
+            <div className=' flex flex-col lg:flex-row gap-5'>
                 <Link to="/search" className='flex flex-1'>
                     <div className='flex flex-1 relative hover:opacity-95'>
                         <img src={lagos} className='w-full h-[350px] rounded-lg object-cover' alt="Lagos" />
@@ -37,7 +36,7 @@ const Trending = () => {
                 </Link>
             </div>
             
-            <div className='flex gap-5'>
+            <div className='flex flex-col lg:flex-row gap-5'>
                 <Link to="/search">
                     <div className='relative flex hover:opacity-95'>
                         <img src={enugu} className='w-full h-[350px] rounded-lg' alt="" />
@@ -74,9 +73,11 @@ const Trending = () => {
                     </div>
                 </Link>
                 
-
             </div>
+            
+        </div>
 
+        <div>
             
         </div>
 

@@ -54,6 +54,18 @@ router.get("/search", async (req:Request, res:Response)=>{
     }
 })
 
+// get all the lastupdated hotel
+router.get("/", async (req:Request, res: Response)=>{
+  try {
+    const hotels = await Hotel.find().sort("-lastUpdated")
+    res.json(hotels)
+    
+  } catch (error) {
+    console.log("error", error)
+    res.status(500).json({message: "Error fetching hotels"})
+  }
+})
+
 // hotel detail page end point
 router.get("/:id", [
     param("id").notEmpty().withMessage("Hotel ID is required")

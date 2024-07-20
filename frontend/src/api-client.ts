@@ -168,9 +168,18 @@ export const searchHotels = async (searchParams : SearchParams) : Promise<HotelS
     searchParams.facilities?.forEach((facility)=> queryParams.append("facilities", facility))
     searchParams.types?.forEach((type)=> queryParams.append("types", type))
     searchParams.stars?.forEach((star)=> queryParams.append("stars", star))
-
+    
     const response = await fetch(`${API_BASE_URL}/api/hotels/search?${queryParams}`)
 
+    if (!response.ok){
+        throw new Error("Error fetching hotels")
+    }
+
+    return response.json()
+}
+
+export const fetchHotels = async (): Promise<HotelType[]> =>{
+    const response = await fetch(`${API_BASE_URL}/api/hotels`)
     if (!response.ok){
         throw new Error("Error fetching hotels")
     }

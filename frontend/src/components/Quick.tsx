@@ -3,6 +3,7 @@ import ibadan from "../assets/ibadan.jpg"
 import { Link } from 'react-router-dom'
 
 const Quick = () => {
+
   return (
     <div className='flex flex-col gap-5 mt-20'>
         <h2 className='text-xl lg:text-4xl font-bold'>Quick and easy trip planner</h2>
@@ -12,7 +13,7 @@ const Quick = () => {
 
         <div className='flex gap-10'>
             <div className=' flex flex-col gap-5'>
-                <Link to="/search">
+                <Link to="/search?destination=Lagos">
                     <img 
                         src={lagos} 
                         className=' w-[200px] h-[150px] object-cover rounded-md'
