@@ -49,7 +49,7 @@ export const signIn = async ( formData: SignInFormData)=>{
     return body
 }
 
-// The validate token makes sures the user is loged in
+// The validate token makes sure the user is loged in
 export const validateToken = async ()=>{
     const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {
         credentials: 'include'
@@ -104,7 +104,7 @@ export const editMyHotel = async (): Promise<HotelType[]> =>{
     const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
         credentials: "include",
     })
-
+    
     if(!response.ok){
         throw new Error("Error fetching hotels")
     }
@@ -151,7 +151,6 @@ export type SearchParams = {
     sortOption?: string;
 };
 
-
 export const searchHotels = async (searchParams : SearchParams) : Promise<HotelSearchResponse> =>{
     // create new url params object
     const queryParams = new URLSearchParams()
@@ -177,6 +176,7 @@ export const searchHotels = async (searchParams : SearchParams) : Promise<HotelS
 
     return response.json()
 }
+
 
 export const fetchHotels = async (): Promise<HotelType[]> =>{
     const response = await fetch(`${API_BASE_URL}/api/hotels`)

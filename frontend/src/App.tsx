@@ -13,7 +13,9 @@ import MyBookings from "./pages/MyBookings"
 import HomePage from "./pages/HomePage"
 
 function App() {
+
   const {isLoggedIn} = useAppContext()
+
   return (
     <Router>
       <Routes>

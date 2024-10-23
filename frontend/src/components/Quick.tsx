@@ -12,30 +12,33 @@ const Quick = () => {
         </p>
 
         <div className='flex gap-10'>
-            <div className=' flex flex-col gap-5'>
+            
+            <div className=" flex flex-col gap-2">
                 <Link to="/search?destination=Lagos">
                     <img 
                         src={lagos} 
                         className=' w-[200px] h-[150px] object-cover rounded-md'
                     />
-                    <div className=''>
-                        <h3 className=' font-bold text-xl'>Lagos</h3>
-                        <p className=' mt-2 text-gray-500 text-lg'>20km away</p>
-                    </div>
                 </Link>
+
+                <div className='flex flex-col'>
+                    <h3 className=' font-bold text-base md:text-xl'>Lagos</h3>
+                    <p className=' mt-2 text-gray-500 text-base md:text-lg'>20km away</p>
+                </div>
             </div>
             
-            <div className=' flex flex-col gap-5'>
+            <div className='flex flex-col gap-2'>
                 <Link to="/search">
                     <img 
                         src={ibadan} 
                         className=' w-[200px] h-[150px] object-cover rounded-md'
                     />
-                    <div className=''>
-                        <h3 className=' font-bold text-xl'>Ibadan</h3>
-                        <p className=' mt-2 text-gray-500 text-lg'>40km away</p>
-                    </div>
                 </Link>
+
+                <div className=''>
+                    <h3 className=' font-bold text-base md:text-xl'>Ibadan</h3>
+                    <p className=' mt-2 text-gray-500 text-base md:text-lg'>40km away</p>
+                </div>
             </div>
         </div>
     </div>

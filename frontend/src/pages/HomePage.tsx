@@ -6,6 +6,7 @@ import * as apiClient from "../api-client"
 import { useQuery } from "@tanstack/react-query"
 
 const HomePage = () => {
+    
     const {data: hotels} = useQuery({
         queryKey:["fetchQuery"],
         queryFn: ()=> apiClient.fetchHotels()
@@ -28,7 +29,7 @@ const HomePage = () => {
             <div className="absolute inset-0 bg-black opacity-50"></div>
             <div className="relative flex justify-start items-center h-full p-6">
                 <div className="text-left text-white">
-                <h1 className="text-4xl font-bold mb-4">Seize the moment</h1>
+                <h1 className="text-2xl md:text-4xl font-bold mb-4">Seize the moment</h1>
                 <p className="mb-4"> Lorem ipsum, dolor sit amet consectetur adipisicing elit. <br /> Voluptatem 
                     reprehenderit laboriosam</p>
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -43,7 +44,7 @@ const HomePage = () => {
             <Trending />
             <div className="mt-10">
                 <h2 className=" text-xl lg:text-3xl font-bold mb-5">Home guest love</h2>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
                     {guestLoves.map((hotel) => (
                         <GuestLoveCard key={hotel._id} hotel={hotel} />
                     ))}
@@ -53,7 +54,7 @@ const HomePage = () => {
             <div className="mt-10">
                 <h2 className=" text-xl lg:text-3xl font-bold mb-5">Stay at our top unique properties</h2>
                 <p className=" mb-3 text-gray-500 text-lg">From castles and villas to boats and igloos, we have it all</p>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
                     {uniqueProperties.map((hotel) => (
                         <GuestLoveCard key={hotel._id} hotel={hotel} />
                     ))}

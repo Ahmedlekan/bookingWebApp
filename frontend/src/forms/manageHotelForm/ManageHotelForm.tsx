@@ -91,7 +91,7 @@ const ManageHotelForm = ({onSave, isLoading, hotel}: Props) => {
               >
                 {isLoading ? "Saving..." : "Save"}
               </button>
-        </span>
+            </span>
         </form>
     </FormProvider>
   )

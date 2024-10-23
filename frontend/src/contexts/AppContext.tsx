@@ -20,7 +20,6 @@ const stripePromise = loadStripe(STRIPE_PUB_KEY);
 
 const AppContext = createContext<AppContextProps | undefined>(undefined)
 
-
 export const AppContextProvider = ({children}:{children: React.ReactNode}) => {
     
     const [toast, setToast] = useState<ToastMessage | undefined>(undefined)

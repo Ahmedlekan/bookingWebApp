@@ -16,9 +16,10 @@ const Trending = () => {
                 <Link to="/search" className='flex flex-1'>
                     <div className='flex flex-1 relative hover:opacity-95'>
                         <img src={lagos} className='w-full h-[350px] rounded-lg object-cover' alt="Lagos" />
-                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 via-transparent rounded-lg'></div>
+                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 
+                            via-transparent rounded-lg'></div>
                         <h2 className='absolute font-bold text-xl lg:text-3xl text-white ml-5 mt-5'>
-                        Lagos
+                            Lagos
                         </h2>
                     </div>
                 </Link>
@@ -26,7 +27,8 @@ const Trending = () => {
                 <Link to="/search" className='flex flex-1'>
                     <div className=' flex flex-1 relative hover:opacity-95'>
                         <img src={ibadan} className='w-full h-[350px] rounded-lg' alt="" />
-                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 via-transparent rounded-lg'></div>
+                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 
+                            via-transparent rounded-lg'></div>
                         <h2 className=' absolute font-bold text-xl lg:text-3xl 
                             text-white ml-5 mt-5'
                         >
@@ -40,7 +42,8 @@ const Trending = () => {
                 <Link to="/search">
                     <div className='relative flex hover:opacity-95'>
                         <img src={enugu} className='w-full h-[350px] rounded-lg' alt="" />
-                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 via-transparent rounded-lg'></div>
+                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 
+                            via-transparent rounded-lg'></div>
                         <h2 className=' absolute font-bold text-xl lg:text-3xl 
                             text-white ml-5 mt-5'
                         >
@@ -52,7 +55,8 @@ const Trending = () => {
                 <Link to="/search">
                     <div className=' flex relative hover:opacity-95'>
                         <img src={abia} className='w-full h-[350px] rounded-lg' alt="" />
-                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 via-transparent rounded-lg'></div>
+                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 
+                            via-transparent rounded-lg'></div>
                         <h2 className=' absolute font-bold text-xl lg:text-3xl 
                             text-white ml-5 mt-5'
                         >
@@ -64,7 +68,8 @@ const Trending = () => {
                 <Link to="/search">
                     <div className=' flex relative hover:opacity-95'>
                         <img src={kwara} className='w-full h-[350px] rounded-lg' alt="" />
-                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 via-transparent rounded-lg'></div>
+                        <div className='absolute inset-0 bg-gradient-to-b from-slate-700 
+                            via-transparent rounded-lg'></div>
                         <h2 className=' absolute font-bold text-xl lg:text-3xl 
                             text-white ml-5 mt-5'
                         >

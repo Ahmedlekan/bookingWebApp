@@ -26,3 +26,4 @@ export const hotelTypes = [
     "Spa",
     "Fitness Center",
   ];
+

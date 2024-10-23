@@ -43,6 +43,7 @@ const DetailSection = () => {
             <span className="text-red-500">{errors.country.message}</span>
           )}
         </label>
+        
       </div>
 
       <label className="text-gray-700 text-sm font-bold flex-1">
