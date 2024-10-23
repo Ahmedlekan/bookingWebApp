@@ -26,7 +26,7 @@ router.get("/me", verifyToken, async (req:Request, res: Response)=>{
     }
 })
 
-// Creating a POST route for user registration & the middleware
+
 // /api/users/register
 router.post("/register", [
     check("firstName", "First Name is required").isString(),
@@ -49,13 +49,11 @@ router.post("/register", [
         
         // Checking if a user with the provided email already exists
         if (user) {
-            // Returning a 400 status code with a JSON response if the user exists
             return res.status(400).json({ message: "User already exists" });
         }
 
-        // Creating a new User instance with the data from the request body
+        // Creating a new User instance & save to the database
         user = new User(req.body);
-        // Saving the new user to the database
         await user.save();
 
         //JSON web token
@@ -75,7 +73,6 @@ router.post("/register", [
         
     } catch (error) {
         console.log(error)
-        // Catching any errors that occur during the registration process
         res.status(500).json({ message: "Something went wrong" });
     }
 });

@@ -178,7 +178,7 @@ router.post(
         res.status(500).json({ message: "something went wrong" });
       }
     }
-  );
+);
   
 
 const constructSearchQuery = (queryParams: any)=>{

@@ -26,7 +26,7 @@ router.post("/",
         body("city").notEmpty().withMessage("City is required"),
         body("country").notEmpty().withMessage("Country is required"),
         body("description").notEmpty().withMessage("Description is required"),
-        body("type").notEmpty().withMessage("Hote type is required"),
+        body("type").notEmpty().withMessage("Hotel type is required"),
         body("pricePerNight").notEmpty().isNumeric().withMessage("Price per night is required & must be number"),
         body("facilities").notEmpty().isArray().withMessage("Facilities are required"),
     ],
@@ -56,7 +56,7 @@ router.post("/",
         }
 })
 
-//only the login user can access this endpoint. For fetching the list of added hotel
+// For fetching the list of added hotel
 router.get("/", verifyToken, async (req: Request, res: Response)=>{
     try {
         //fetch all the hotels with auserId
@@ -67,10 +67,12 @@ router.get("/", verifyToken, async (req: Request, res: Response)=>{
     }
 })
 
-//only the login user can access this endpoint. GET a single hotel from the list of added hotel
+// GET a single hotel from the list of added hotel
 router.get("/:id", verifyToken, async (req: Request, res: Response) => {
-  const id = req.params.id.toString();
-  try {
+  
+    const id = req.params.id.toString();
+  
+    try {
     const hotel = await Hotel.findOne({
       _id: id,
       userId: req.userId,
@@ -81,7 +83,7 @@ router.get("/:id", verifyToken, async (req: Request, res: Response) => {
   }
 });
 
-//only the login user can access this endpoint. For updating the hotel with its images
+// For updating the hotel with its images
 router.put("/:hotelId", verifyToken, upload.array("imageFiles"), async(req:Request, res:Response)=>{
     
     try {
