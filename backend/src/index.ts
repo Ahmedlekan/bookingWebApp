@@ -35,7 +35,9 @@ app.use(cors({
     ]
 }))
 
-app.use(express.static(path.join(__dirname, "../../frontend/dist")))
+const pathToDist = path.join(__dirname, "../../frontend/dist"); // Adjusted path
+
+app.use(express.static(pathToDist));
 
 // register endpoint setup
 app.use("/api/users", userRoutes)
@@ -45,11 +47,11 @@ app.use("/api/auth", authRoutes)
 app.use("/api/my-hotels", myHotelsRoutes)
 // list all my hotels from data base endpoint setup
 app.use("/api/hotels", hotelRoutes)
-app.use("/api/my-bookings", bookingRoutes)
+app.use("/api/my-bookings", bookingRoutes)  
 
 app.get("*", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
-});  
+    res.sendFile(path.join(pathToDist, "index.html"));
+});
 
 app.listen(7000, ()=>{
     console.log("server running on localhost:7000")
