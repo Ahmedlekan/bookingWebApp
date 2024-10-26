@@ -19,6 +19,8 @@ cloudinary.config({
 });
 mongoose.connect(process.env.MONGO_CONNECTION_STRING as string)
 
+const PORT = process.env.PORT || 7000;
+
 
 const app = express()
 app.use(cookierParser())
@@ -53,7 +55,7 @@ app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(pathToDist, "index.html"));
 });
 
-app.listen(7000, ()=>{
-    console.log("server running on localhost:7000")
+app.listen(PORT, ()=>{
+    console.log(`server running on ${PORT}`)
 })
 
