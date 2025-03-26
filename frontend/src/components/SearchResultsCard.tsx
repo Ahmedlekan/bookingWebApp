@@ -32,7 +32,7 @@ const SearchResultsCard = ({hotel}: SearchResultsCardProps) => {
           </div>
           <Link
             to={`/detail/${hotel._id}`}
-            className="text-2xl font-bold cursor-pointer"
+            className="text-2xl font-bold cursor-pointer font-display"
           >
             {hotel.name}
           </Link>
@@ -60,8 +60,8 @@ const SearchResultsCard = ({hotel}: SearchResultsCardProps) => {
             <span className="font-bold">£{hotel.pricePerNight} per night</span>
             <Link
               to={`/detail/${hotel._id}`}
-              className="bg-blue-600 text-white h-full p-2 font-bold text-xl 
-                max-w-fit hover:bg-blue-500"
+              className="bg-lime-600 text-white h-full p-2 font-bold text-xl 
+                max-w-fit hover:bg-lime-500"
             >
               View More
             </Link>

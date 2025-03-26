@@ -28,8 +28,9 @@ const SearchBar = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="-mt-8 p-1 bg-orange-300 rounded shadow-md grid 
-      grid-cols-1 lg:grid-cols-5 items-center gap-2"
+      className="p-1 bg-gray-200 rounded shadow-md grid 
+      grid-cols-1 lg:grid-cols-5 items-center gap-2
+      relative z-20 -mt-10 font-display"
     >
       <div className="flex flex-row items-center flex-1 bg-white py-4 px-2 rounded">
         <MdTravelExplore size={25} className="mr-2" />
@@ -94,8 +95,8 @@ const SearchBar = () => {
           wrapperClassName="min-w-full"
         />
       </div>
-      <button className="w-full lg:w-auto  bg-blue-600 text-white h-full p-2 
-          text-xl lg:text-2xl hover:bg-blue-500 rounded"
+      <button className="w-full lg:w-auto  bg-lime-600 text-white h-full p-2 
+          text-xl lg:text-2xl hover:bg-lime-500 rounded"
         >
           Search
       </button>

@@ -2,94 +2,210 @@ import { useFormContext } from 'react-hook-form'
 import { HotelFormData } from './ManageHotelForm'
 
 const DetailSection = () => {
-  const {register, formState:{errors}} = useFormContext<HotelFormData>()
+  const { register, formState: { errors } } = useFormContext<HotelFormData>()
   
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold mb-3">Add Hotel</h1>
-      <label className="text-gray-700 text-sm font-bold flex-1">
-        Name
-        <input
-          type="text"
-          className="border rounded w-full py-1 px-2 font-normal"
-          {...register("name", { required: "This field is required" })}
-        ></input>
-        {errors.name && (
-          <span className="text-red-500">{errors.name.message}</span>
-        )}
-      </label>
-
-      <div className="flex gap-4">
-        <label className="text-gray-700 text-sm font-bold flex-1">
-          City
-          <input
-            type="text"
-            className="border rounded w-full py-1 px-2 font-normal"
-            {...register("city", { required: "This field is required" })}
-          ></input>
-          {errors.city && (
-            <span className="text-red-500">{errors.city.message}</span>
-          )}
-        </label>
-
-        <label className="text-gray-700 text-sm font-bold flex-1">
-          Country
-          <input
-            type="text"
-            className="border rounded w-full py-1 px-2 font-normal"
-            {...register("country", { required: "This field is required" })}
-          ></input>
-          {errors.country && (
-            <span className="text-red-500">{errors.country.message}</span>
-          )}
-        </label>
-        
+    <div className="space-y-6">
+      
+      <div className="pb-6 border-b border-gray-200">
+        <h1 className="text-3xl md:text-5xl font-display
+          font-bold text-gray-800">
+            Add Hotel
+        </h1>
+        <p className="text-gray-600 mt-1 text-lg font-body">
+          Fill in the details of your property
+        </p>
       </div>
 
-      <label className="text-gray-700 text-sm font-bold flex-1">
-          Description
-          <textarea
-            rows={10}
-            className="border rounded w-full py-1 px-2 font-normal"
-            {...register("description", { required: "This field is required" })}
-          ></textarea>
-          {errors.description && (
-            <span className="text-red-500">{errors.description.message}</span>
-          )}
-      </label>
+      {/* Basic Information Section */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 font-body">
+        <div className="space-y-6">
+          <div>
+            <label className="block text-xl font-medium
+              text-gray-900 mb-1">
+              Hotel Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              className={`block w-full font-body
+                rounded-md shadow-sm ${errors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+              {...register("name", { required: "Hotel name is required" })}
+              placeholder="Grand Plaza Hotel"
+            />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+            )}
+          </div>
 
-      <label className="text-gray-700 text-sm font-bold max-w-[50%]">
-        Price Per Night
-        <input
-          type="number"
-          min={1}
-          className="border rounded w-full py-1 px-2 font-normal"
-          {...register("pricePerNight", { required: "This field is required" })}
-        ></input>
-        {errors.pricePerNight && (
-          <span className="text-red-500">{errors.pricePerNight.message}</span>
-        )}
-      </label>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label className="block text-xl font-medium 
+                text-gray-900 mb-1">
+                City <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                className={`block w-full rounded-md shadow-sm ${errors.city ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+                {...register("city", { required: "City is required" })}
+                placeholder="New York"
+              />
+              {errors.city && (
+                <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
+              )}
+            </div>
 
-      <label className="text-gray-700 text-sm font-bold max-w-[50%]">
-        Star Rating
-        <select
-          {...register("starRating", {
-            required: "This field is required",
-          })}
-          className="border rounded w-full p-2 text-gray-700 font-normal"
-        >
-          <option value="" className="text-sm font-bold">
-            Select as Rating
-          </option>
-          {[1, 2, 3, 4, 5].map((num) => (
-            <option value={num}>{num}</option>
-          ))}
-        </select>
-        {errors.starRating && (
-          <span className="text-red-500">{errors.starRating.message}</span>
-        )}
-      </label>
+            <div>
+              <label className="block text-xl font-medium
+                text-gray-900 mb-1">
+                Country <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                className={`block w-full rounded-md shadow-sm ${errors.country ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+                {...register("country", { required: "Country is required" })}
+                placeholder="United States"
+              />
+              {errors.country && (
+                <p className="mt-1 text-sm text-red-600">{errors.country.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xl font-medium 
+              text-gray-900 mb-1">
+              Description <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              rows={5}
+              className={`block w-full rounded-md shadow-sm ${errors.description ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+              {...register("description", { required: "Description is required" })}
+              placeholder="Describe your hotel's features, amenities, and unique qualities..."
+            />
+            {errors.description && (
+              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Ratings and Pricing Section */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <label className="block text-xl font-medium 
+                text-gray-900 mb-1">
+                Price Per Night ($) <span className="text-red-500">*</span>
+              </label>
+              <div className="relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex
+                  items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm">$</span>
+                </div>
+                <input
+                  type="number"
+                  min={1}
+                  className={`block w-full pl-7 rounded-md ${errors.pricePerNight ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+                  {...register("pricePerNight", { 
+                    required: "Price is required",
+                    min: { value: 1, message: "Price must be at least $1" }
+                  })}
+                  placeholder="199"
+                />
+              </div>
+              {errors.pricePerNight && (
+                <p className="mt-1 text-sm text-red-600">{errors.pricePerNight.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xl font-medium 
+                text-gray-900 mb-1">
+                Star Rating <span className="text-red-500">*</span>
+              </label>
+              <select
+                {...register("starRating", {
+                  required: "Rating is required",
+                })}
+                className={`block w-full rounded-md shadow-sm ${errors.starRating ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'} py-2 px-3`}
+              >
+                <option value="">Select rating</option>
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <option key={num} value={num}>
+                    {num} Star{num !== 1 ? 's' : ''}
+                  </option>
+                ))}
+              </select>
+              {errors.starRating && (
+                <p className="mt-1 text-sm text-red-600">{errors.starRating.message}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Room Details Section */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div>
+              <label className="block text-xl font-medium 
+                text-gray-900 mb-1">
+                Bedrooms <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                min={1}
+                className={`block w-full rounded-md shadow-sm ${errors.bedrooms ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+                {...register("bedrooms", { 
+                  required: "Bedroom count is required",
+                  min: { value: 1, message: "Must have at least 1 bedroom" }
+                })}
+                placeholder="2"
+              />
+              {errors.bedrooms && (
+                <p className="mt-1 text-sm text-red-600">{errors.bedrooms.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xl font-medium 
+                text-gray-900 mb-1">
+                Bathrooms <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                min={1}
+                className={`block w-full rounded-md shadow-sm ${errors.bathrooms ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+                {...register("bathrooms", { 
+                  required: "Bathroom count is required",
+                  min: { value: 1, message: "Must have at least 1 bathroom" }
+                })}
+                placeholder="2"
+              />
+              {errors.bathrooms && (
+                <p className="mt-1 text-sm text-red-600">{errors.bathrooms.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xl font-medium 
+                text-gray-900 mb-1">
+                Parking Spaces
+              </label>
+              <input
+                type="number"
+                min={0}
+                className={`block w-full rounded-md shadow-sm ${errors.garage ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+                {...register("garage", { 
+                  min: { value: 0, message: "Cannot be negative" }
+                })}
+                placeholder="1"
+              />
+              {errors.garage && (
+                <p className="mt-1 text-sm text-red-600">{errors.garage.message}</p>
+              )}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
   )

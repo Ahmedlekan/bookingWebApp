@@ -12,9 +12,21 @@ export default {
         lg: '4rem',
         xl: '5rem',
         '2xl': '6rem',
+      }
+    },
+    extend: {
+      fontFamily: {
+        serif: ['Merriweather', 'serif'],
+        display: ['Playfair Display', 'serif'],
+        body: ['Libre Baskerville', 'serif'],
+      },
+      ringColor: {
+        DEFAULT: '#84cc16', // lime-500
+      },
+      borderColor: {
+        DEFAULT: '#84cc16', // lime-500
       },
     },
-    extend: {},
   },
   plugins: [],
 }

@@ -11,6 +11,7 @@ import Detail from "./pages/Detail"
 import Booking from "./pages/Booking"
 import MyBookings from "./pages/MyBookings"
 import HomePage from "./pages/HomePage"
+import AboutUs from "./pages/AboutUs"
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/detail/:hotelId" element={<Layout><Detail /></Layout>} />
         <Route path="/register" element={<Layout><Register /></Layout>} />
         <Route path="/sign-in" element={<Layout><SignIn /></Layout>} />
+        <Route path="/aboutus" element={<Layout><AboutUs /></Layout>} />
 
         {isLoggedIn && (<>
           <Route path="/hotel/:hotelId/booking" element={<Layout ><Booking /></Layout>} />
