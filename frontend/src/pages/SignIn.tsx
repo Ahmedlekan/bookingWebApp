@@ -81,7 +81,7 @@ const SignIn = () => {
                 </label>
 
                 <div>
-                    <button className='bg-black hover:bg-black/80 font-body
+                    <button className='bg-lime-600 hover:bg-lime-500 font-body
                     text-white font-bold py-2 px-8 rounded focus:outline-none'>
                         Sign In 
                     </button>
@@ -92,7 +92,7 @@ const SignIn = () => {
             <p className='align-baseline font-medium mt-4 text-sm font-body'>
                 Haven't an account? Please&nbsp;
                 <Link to="/register" className='text-deepbrown 
-                  hover:text-red-400 font-body'>
+                  hover:text-lime-500 font-body'>
                     Register
                 </Link>
             </p>

@@ -61,8 +61,8 @@ export default function BlogSection() {
       </h2>
       <p className="text-gray-500 mb-12 max-w-2xl
         mx-auto text-lg font-body">
-        Choose from different listing templates and lay
-        them out as lists or grids, full-width or boxed
+        There are different property options to choose from,
+        each serving a purpose to help you build a finished site.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 font-body
