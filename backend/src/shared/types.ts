@@ -11,7 +11,7 @@ export type UserType = {
     userId: string;
     name: string;
     city: string;
-    country: string;
+    province: string;
     description: string;
     type: string;
     adultCount: number;
@@ -22,6 +22,10 @@ export type UserType = {
     imageUrls: string[];
     lastUpdated: Date;
     bookings: BookingType[];
+
+    bedrooms: number;
+    bathrooms: number;
+    garage: number;
   };
   
   export type BookingType = {

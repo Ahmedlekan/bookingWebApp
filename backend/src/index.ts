@@ -37,7 +37,7 @@ app.use(cors({
     ]
 }))
 
-const pathToDist = path.join(__dirname, "../../frontend/dist"); // Adjusted path
+const pathToDist = path.join(__dirname, "../../frontend/dist");
 
 app.use(express.static(pathToDist));
 

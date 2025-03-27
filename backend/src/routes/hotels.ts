@@ -91,10 +91,6 @@ router.get("/:id", [
 router.post("/:hotelId/bookings/payment-intent",
   verifyToken,
   async (req: Request, res: Response)=>{
-    // to create a payment-intent, you need to know
-    // 1. Total cost
-    // 2. hotelId
-    // 3. userId
     const { numberOfNights } = req.body;
     const hotelId = req.params.hotelId;
 
