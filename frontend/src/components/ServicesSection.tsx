@@ -10,32 +10,32 @@ type Service = {
 const services: Service[] = [
   {
     title: "Property Management",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy",
+    description: "We provide seamless property management solutions, ensuring optimal maintenance, tenant satisfaction, and maximum returns on your investment.",
     icon: <FaUsers size={32} />,
   },
   {
     title: "Capital Improvements",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy",
+    description: "Enhance the value of your property with strategic upgrades and renovations designed to increase asset longevity and market appeal.",
     icon: <FaChartPie size={32} />,
   },
   {
     title: "Financial Reporting",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy",
+    description: "Gain clear insights with detailed and transparent financial reporting, helping you make informed decisions to maximize profitability.",
     icon: <FaChartLine size={32} />,
   },
   {
     title: "Business Development",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy",
+    description: "Drive growth and expand your reach with tailored strategies that foster business development and increase your market footprint.",
     icon: <FaHandshake size={32} />,
   },
   {
     title: "Finance Real Estate",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy",
+    description: "We offer expert guidance in securing financing and managing real estate investments to ensure sustainable growth and long-term success.",
     icon: <FaTv size={32} />,
   },
   {
     title: "Recover Asset Value",
-    description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy",
+    description: "Our proven strategies help restore and recover asset value through proactive management and value-add initiatives.",
     icon: <FaBalanceScale size={32} />,
   },
 ];
@@ -56,7 +56,7 @@ export default function ServicesSection() {
               <h4 className="text-xl font-display font-semibold mb-1">
                 {service.title}
               </h4>
-              <p className="text-gray-500 font-body text-sm">
+              <p className="text-gray-500 font-body text-base ">
                 {service.description}
               </p>
             </div>

@@ -15,13 +15,13 @@ export type Neighborhood = {
   };
   
   const neighborhoods: Neighborhood[] = [
-    { id: 1, title: "New York", properties: 10, image: grid1 },             
-    { id: 2, title: "Single Family Home", properties: 11, image: grid2 }, 
+    { id: 1, title: "Vancouver", properties: 10, image: grid1 },             
+    { id: 2, title: "Montreal Quebec", properties: 11, image: grid2 }, 
     { id: 3, title: "Apartment", properties: 30, image: grid3 },       
-    { id: 4, title: "Villa", properties: 10, image: grid4 },               
-    { id: 5, title: "Miami", properties: 5, image: grid5 },                
-    { id: 6, title: "Los Angeles", properties: 14, image: grid6 },          
-    { id: 7, title: "Chicago", properties: 13, image: grid7 },     
+    { id: 4, title: "Edmilton", properties: 10, image: grid4 },               
+    { id: 5, title: "Toronto", properties: 5, image: grid5 },                
+    { id: 6, title: "Ottawa", properties: 14, image: grid6 },          
+    { id: 7, title: "Quebec city", properties: 13, image: grid7 },     
   ];
   
   export default function NeighborhoodGrid() {

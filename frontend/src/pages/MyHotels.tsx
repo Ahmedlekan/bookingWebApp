@@ -101,7 +101,7 @@ const MyHotels = () => {
                             <h2 className="text-xl font-bold text-gray-900 truncate">
                                 {hotel.name}
                             </h2>
-                            <span className="flex items-center bg-blue-100 
+                            <span className="flex items-center bg-lime-100 
                                 text-lime-800 text-xs font-semibold px-2.5 py-0.5 rounded">
                                 <BiStar className="mr-1" />
                                 {hotel.starRating}

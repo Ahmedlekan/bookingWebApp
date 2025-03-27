@@ -3,7 +3,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import * as apiClient from "../api-client";
 import { useAppContext } from "../contexts/AppContext";
 
-const SignOutBtn = () => {
+type Props = {
+  onClick?: () => void; // Define onClick as an optional prop
+};
+
+const SignOutBtn = ({onClick}: Props) => {
     
     const {showToast} = useAppContext()
     const queryClient = useQueryClient()
@@ -18,8 +22,10 @@ const SignOutBtn = () => {
             showToast({ message: error.message, type: "ERROR" });
           },
     })
+
     const handleClick = ()=>{
         mutation.mutate()
+        onClick
     }
   return (
     <button

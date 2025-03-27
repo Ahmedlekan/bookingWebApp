@@ -11,8 +11,8 @@ import { GiElevator } from "react-icons/gi";
 import { useState } from "react";
 
 const facilityIcons: Record<string, JSX.Element> = {
-  "Free WiFi": <FaWifi className="text-blue-500" />,
-  "Swimming Pool": <FaSwimmingPool className="text-blue-400" />,
+  "Free WiFi": <FaWifi className="text-lime-500" />,
+  "Swimming Pool": <FaSwimmingPool className="text-lime-400" />,
   "Parking": <FaParking className="text-gray-600" />,
   "Restaurant": <FaUtensils className="text-amber-600" />,
   "TV": <FaTv className="text-purple-500" />,
@@ -21,7 +21,7 @@ const facilityIcons: Record<string, JSX.Element> = {
   "Family Rooms": <MdFamilyRestroom className="text-pink-500" />,
   "Pet Friendly": <MdPets className="text-brown-500" />,
   "Elevator": <GiElevator className="text-gray-700" />,
-  "Heating": <FaSnowflake className="text-blue-300" />,
+  "Heating": <FaSnowflake className="text-lime-300" />,
   "Gym": <FaDumbbell className="text-amber-800" />
 };
 

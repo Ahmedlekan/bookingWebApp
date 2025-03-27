@@ -20,11 +20,8 @@ export default {
         display: ['Playfair Display', 'serif'],
         body: ['Libre Baskerville', 'serif'],
       },
-      ringColor: {
-        DEFAULT: '#84cc16', // lime-500
-      },
-      borderColor: {
-        DEFAULT: '#84cc16', // lime-500
+      colors: {
+        default: '#ffb700', 
       },
     },
   },

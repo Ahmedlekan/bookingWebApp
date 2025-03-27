@@ -10,7 +10,7 @@ import { HotelType } from "../../../../backend/src/shared/types"
 export type HotelFormData = {
     name: string;
     city: string;
-    country: string;
+    province: string;
     description: string;
     type: string;
     pricePerNight: number;
@@ -49,7 +49,7 @@ const ManageHotelForm = ({onSave, isLoading, hotel}: Props) => {
 
       formData.append("name", formDataJson.name)
       formData.append("city", formDataJson.city)
-      formData.append("country", formDataJson.country)
+      formData.append("province", formDataJson.province)
       formData.append("description", formDataJson.description)
       formData.append("type", formDataJson.type);
       formData.append("pricePerNight", formDataJson.pricePerNight.toString());

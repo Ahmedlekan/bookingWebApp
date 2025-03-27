@@ -18,39 +18,39 @@ const blogPosts: BlogPost[] = [
   {
     id: 1,
     title: "10 Quick Tips About Business Development",
-    date: "March 9, 2016",
+    date: "April 17, 2024",
     tag: "Real Estate",
     author: "Martin Moore",
     image: chicago1,
-    excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mollis et sem sed sollicitudin. Donec...",
+    excerpt: "Drive growth and expand your reach with tailored strategies that foster business development...",
   },
   {
     id: 2,
     title: "14 Common Misconceptions About Business Development",
-    date: "March 9, 2016",
+    date: "October 16, 2024",
     tag: "Real Estate",
     author: "Martin Moore",
     image: chicago2,
-    excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mollis et sem sed sollicitudin. Donec...",
+    excerpt: "We offer expert guidance in securing financing and managing real estate investments to ensure...",
   },
   {
     id: 3,
     title: "10 Quick Tips About Real Estate",
-    date: "March 9, 2016",
+    date: "December 9, 2024",
     tag: "Real Estate",
     author: "Martin Moore",
     image: pool,
-    excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mollis et sem sed sollicitudin. Donec...",
+    excerpt: "Our proven strategies help restore and recover asset value through proactive management and...",
   },
   {
     id: 4,
     title: "15 Best Blogs To Follow About Real Estate",
-    date: "March 9, 2016",
+    date: "March 9, 2025",
     tag: "Real Estate",
     author: "Martin Moore",
     image: losangeles11,
-    excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mollis et sem sed sollicitudin. Donec...",
-  },
+    excerpt: "We provide seamless property management solutions, ensuring optimal maintenance, tenant...",
+  }
 ];
 
 export default function BlogSection() {
@@ -85,7 +85,7 @@ export default function BlogSection() {
               </div>
 
               <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
-              <p className="text-gray-600 text-sm mb-4">{post.excerpt}</p>
+              <p className="text-gray-600 text-base mb-4">{post.excerpt}</p>
               <a
                 href="#"
                 className="text-green-600 font-medium text-sm hover:underline"

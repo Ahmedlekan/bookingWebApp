@@ -20,7 +20,7 @@ const GuestLoveCard = ({hotel}: GuestLoveCardProps) => {
                     <p className="text-gray-700 text-base">{hotel.city} {hotel.country}</p>
                     
                     <div className='flex gap-3 justify-between items-center mt-3'>
-                        <div className=' bg-blue-800 text-white py-1 px-2'>{hotel.starRating}</div>
+                        <div className=' bg-lime-800 text-white py-1 px-2'>{hotel.starRating}</div>
                         <div className='flex justify-end items-center gap-3'>
                             <p> Starting from </p>
                             <span className='font-bold text-xl'>${hotel.pricePerNight}</span>

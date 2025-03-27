@@ -132,7 +132,7 @@ const BookingForm = ({ currentUser, paymentIntent }: BookingFormProps) => {
 
       <div className="mb-6 font-body">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">Price Summary</h3>
-        <div className="bg-blue-50 p-4 rounded-lg">
+        <div className="bg-lime-50 p-4 rounded-lg">
           <div className="flex justify-between items-center">
             <span className="font-medium text-gray-700">Total Cost:</span>
             <span className="text-xl font-bold text-lime-700">

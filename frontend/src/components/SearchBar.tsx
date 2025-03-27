@@ -28,7 +28,7 @@ const SearchBar = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-1 bg-gray-200 rounded shadow-md grid 
+      className="p-1 bg-default rounded shadow-md grid 
       grid-cols-1 lg:grid-cols-5 items-center gap-2
       relative z-20 -mt-10 font-display"
     >

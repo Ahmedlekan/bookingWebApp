@@ -51,7 +51,7 @@ export default function SectionBanner() {
           </h1>
           <p className="uppercase text-sm tracking-wide
             mb-6 font-semibold font-body">
-            Choose from different listing templates and lay them out as lists
+            Choose from different zlisting templates and lay them out as lists
             or grids, full-width or boxed
           </p>
           <button className="border border-white

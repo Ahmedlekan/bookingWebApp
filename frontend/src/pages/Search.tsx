@@ -11,13 +11,14 @@ import Pagination from '../components/Pagination'
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const FilterTag = ({ label, onRemove }: { label: string; onRemove: () => void }) => (
-    <div className="inline-flex items-center bg-blue-50 text-blue-800
+    <div className="inline-flex items-center bg-lime-700 text-white
     rounded-full py-1.5 pl-3 pr-2 text-sm font-medium">
       {label}
       <button 
         type="button" 
         onClick={onRemove}
-        className="ml-1 p-0.5 rounded-full hover:bg-blue-100 text-blue-600"
+        className="ml-1 p-0.5 rounded-full hover:bg-lime-600 
+        text-white font-bold"
       >
         <XMarkIcon className="h-3 w-3" />
       </button>
@@ -108,10 +109,10 @@ const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     }));
   };
   
-  const handlePriceChange = (value?: number) => {
-    setSelectedPrice(value);
-    setActiveFilters(prev => ({...prev, price: value}));
-  };
+//   const handlePriceChange = (value?: number) => {
+//     setSelectedPrice(value);
+//     setActiveFilters(prev => ({...prev, price: value}));
+//   };
 
   
   // Function to remove a filter
@@ -244,7 +245,7 @@ const removeFilter = (type: keyof typeof activeFilters, value?: string | number)
                 <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-gray-700">Sort by:</span>
                 <select
-                    className="py-2 pl-3 pr-8 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    className="py-2 pl-3 pr-8 text-sm border border-gray-300 rounded-md focus:ring-lime-500 focus:border-lime-500"
                     value={sortOption}
                     onChange={(event) => setSortOption(event.target.value)}
                 >

@@ -98,7 +98,7 @@ const MyBookings = () => {
                   {hotel.bookings.map((booking, index) => (
                     <div
                       key={index}
-                      className="border-l-4 border-lime-500 pl-4 py-2 bg-blue-50/50"
+                      className="border-l-4 border-lime-500 pl-4 py-2 bg-lime-50/50"
                     >
                       <div className="flex items-start mb-2">
                         <FiCalendar className="text-gray-500 mt-1 mr-2 flex-shrink-0" />

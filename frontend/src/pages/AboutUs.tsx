@@ -96,7 +96,7 @@ const AboutUs = () => {
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-body">
               {stats.map((stat, index) => (
-                <div key={index} className="bg-blue-50 p-4 rounded-lg
+                <div key={index} className="bg-lime-50 p-4 rounded-lg
                     text-center">
                   <p className="text-2xl font-bold text-lime-700">
                     {stat.value}

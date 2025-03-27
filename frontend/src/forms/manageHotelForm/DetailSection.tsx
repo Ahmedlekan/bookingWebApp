@@ -47,7 +47,7 @@ const DetailSection = () => {
                 type="text"
                 className={`block w-full rounded-md shadow-sm ${errors.city ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
                 {...register("city", { required: "City is required" })}
-                placeholder="New York"
+                placeholder="Laval"
               />
               {errors.city && (
                 <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
@@ -57,16 +57,16 @@ const DetailSection = () => {
             <div>
               <label className="block text-xl font-medium
                 text-gray-900 mb-1">
-                Country <span className="text-red-500">*</span>
+                Province <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                className={`block w-full rounded-md shadow-sm ${errors.country ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
-                {...register("country", { required: "Country is required" })}
-                placeholder="United States"
+                className={`block w-full rounded-md shadow-sm ${errors.province ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
+                {...register("province", { required: "Country is required" })}
+                placeholder="Montreal Quebec"
               />
-              {errors.country && (
-                <p className="mt-1 text-sm text-red-600">{errors.country.message}</p>
+              {errors.province && (
+                <p className="mt-1 text-sm text-red-600">{errors.province.message}</p>
               )}
             </div>
           </div>
@@ -126,7 +126,7 @@ const DetailSection = () => {
                 {...register("starRating", {
                   required: "Rating is required",
                 })}
-                className={`block w-full rounded-md shadow-sm ${errors.starRating ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'} py-2 px-3`}
+                className={`block w-full rounded-md shadow-sm ${errors.starRating ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-lime-500 focus:ring-lime-500'} py-2 px-3`}
               >
                 <option value="">Select rating</option>
                 {[1, 2, 3, 4, 5].map((num) => (
