@@ -1,15 +1,31 @@
+import real from "../assets/real-bg.mp4"
+
 const Hero = () => {
   return (
     <div className="relative h-screen max-h-[400px] overflow-hidden
-      bg-cover bg-center pb-16 pt-10 md:pt-20"
-    style={{
-      backgroundImage: "url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6')",
-    }}
+      pb-16 pt-10 md:pt-20"
     >
+    <div className="absolute inset-0 z-0">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="w-full h-full object-cover"
+      >
+        <source src={real} type="video/mp4" />
+        {/* Fallback image if video doesn't load */}
+        <img 
+          src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6" 
+          alt="Fallback background" 
+          className="w-full h-full object-cover"
+        />
+      </video>
+    </div>
 
   {/* Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-t 
-    from-black/70 via-black/40 to-transparent z-0" />
+  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
+  <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-transparent z-10" />
 
   {/* Content */}
   <div className="relative z-10 h-full flex flex-col justify-center items-center text-center px-4">
