@@ -29,7 +29,7 @@ const BookingDetailsSummary = ({
           <div>
             <h3 className="text-base font-medium text-gray-500">Location</h3>
             <p className="text-lg font-semibold text-gray-900">
-              {hotel.name}, {hotel.city}, {hotel.country}
+              {hotel.name}, {hotel.city}, {hotel.province}
             </p>
           </div>
         </div>

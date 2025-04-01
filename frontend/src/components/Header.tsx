@@ -34,7 +34,7 @@ const Header = () => {
           {isLoggedIn ? (
             <>
               <Link to="/my-bookings" className="hover:text-lime-200 transition-colors">My Bookings</Link>
-              <Link to="/my-hotels" className="hover:text-lime-200 transition-colors">My Hotels</Link>
+              {/* <Link to="/my-hotels" className="hover:text-lime-200 transition-colors">My Hotels</Link> */}
               <SignOutBtn />
             </>
           ) : (

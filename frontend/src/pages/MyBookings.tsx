@@ -78,7 +78,7 @@ const MyBookings = () => {
                   <div className="flex items-center text-white">
                     <FiMapPin className="mr-2" />
                     <span className="text-base font-medium">
-                      {hotel.city}, {hotel.country}
+                      {hotel.city}, {hotel.province}
                     </span>
                   </div>
                 </div>

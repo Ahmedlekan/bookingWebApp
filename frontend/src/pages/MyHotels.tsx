@@ -113,7 +113,7 @@ const MyHotels = () => {
                         <div className="space-y-3 mb-5">
                             <div className="flex items-center text-sm text-gray-700">
                                 <BsMap className="mr-2 text-gray-500" />
-                                <span>{hotel.city}, {hotel.country}</span>
+                                <span>{hotel.city}, {hotel.province}</span>
                             </div>
                             <div className="flex items-center text-sm text-gray-700">
                                 <BiMoney className="mr-2 text-gray-500" />

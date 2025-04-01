@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import ListingCard from '../components/ListingCard'
 
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +5,7 @@ import * as apiClient from "../api-client";
 
 const Features = () => {
 
-  const [visibleCount, setVisibleCount] = useState(6);
+  // const [visibleCount, setVisibleCount] = useState(6);
 
   const { data: hotels, isLoading, isError } = useQuery({
     queryKey: ["fetchQuery"],
@@ -14,12 +13,12 @@ const Features = () => {
   });
 
    // Show only the currently visible listings
-   const visibleListings = hotels?.slice(0, visibleCount) || [];
+   const visibleListings = hotels?.slice(0, 6) || [];
 
-   const loadMore = () => {
-     // Increase by 3 each time, but don't exceed total hotels length
-     setVisibleCount(prev => Math.min(prev + 3, hotels?.length || prev + 3));
-   };
+  //  const loadMore = () => {
+  //    // Increase by 3 each time, but don't exceed total hotels length
+  //    setVisibleCount(prev => Math.min(prev + 3, hotels?.length || prev + 3));
+  //  };
 
   if (isLoading) {
     return <div className="text-center py-10 text-gray-500">
@@ -49,7 +48,7 @@ const Features = () => {
         ))}
       </div>
 
-      {hotels.length > visibleCount && (
+      {/* {hotels.length > visibleCount && (
         <div className="text-center mt-6">
           <button
             onClick={loadMore}
@@ -59,7 +58,8 @@ const Features = () => {
             Show More
           </button>
         </div>
-      )}
+      )} */}
+      
     </section>
   )
 }

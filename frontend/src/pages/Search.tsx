@@ -61,9 +61,9 @@ const Search = () => {
   })
 
   // adding and removing the checked and unchecked stars
-  // Update your filter change handlers to update activeFilters
 const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const starRating = event.target.value;
+
     setSelectedStars((prevStars) =>
       event.target.checked
         ? [...prevStars, starRating]
@@ -109,11 +109,6 @@ const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     }));
   };
   
-//   const handlePriceChange = (value?: number) => {
-//     setSelectedPrice(value);
-//     setActiveFilters(prev => ({...prev, price: value}));
-//   };
-
   
   // Function to remove a filter
 const removeFilter = (type: keyof typeof activeFilters, value?: string | number) => {

@@ -28,14 +28,22 @@ export const AppContextProvider = ({children}:{children: React.ReactNode}) => {
         queryFn: apiClient.validateToken
     })
 
+    const showToast = (toastMessage: ToastMessage) => {
+        setToast(toastMessage);
+    }
+
+    const onClose = () => {
+        setToast(undefined);
+    }
+
   return (
     <AppContext.Provider value={{
-        showToast: (toastMessage) => setToast(toastMessage),
+        showToast,
         isLoggedIn: !isError,
         stripePromise
     }}>
         {toast && (
-            <Toast message={toast.message} type={toast.type} onClose={ () => setToast(undefined)} />
+            <Toast message={toast.message} type={toast.type} onClose={onClose} />
         )}
         {children}
     </AppContext.Provider>
