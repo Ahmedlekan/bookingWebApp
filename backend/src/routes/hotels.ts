@@ -214,12 +214,12 @@ const constructSearchQuery = (queryParams: any)=>{
         };
       }
 
-    if(queryParams.stars){
+      if(queryParams.stars){
         const starRatings = Array.isArray(queryParams.stars)
         ? queryParams.stars.map((star : string)=> parseInt(star))
-        : parseInt(queryParams.start)
-
-        constructedQuery.starRatings = {$in: starRatings}
+        : parseInt(queryParams.stars) // Also fix "start" to "stars" here
+    
+        constructedQuery.starRating = {$in: starRatings} // Change to starRating (singular)
     }
 
     if(queryParams.maxPrice){
