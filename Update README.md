@@ -103,7 +103,7 @@ Before starting the project, ensure you have the following prerequisites:
 - Basic familiarity with Kubernetes, Docker, Jenkins, and DevOps principles.
 
 
-Step 1: We need to create an IAM user and generate the AWS Access key
+### Step 1: We need to create an IAM user and generate the AWS Access key
 
 <img width="1707" height="398" alt="Image" src="https://github.com/user-attachments/assets/dd7f1284-c59b-4c6d-9ce7-a38ee459694a" />
 
@@ -122,7 +122,7 @@ Create a new IAM User on AWS and give it AdministratorAccess for testing purpose
 - You will see that you got the credentials, and you can also download the CSV file for the future.
 
 
-Step 2: Install AWS CLI on local machine.
+### Step 2: Install AWS CLI on local machine.
 
 <img width="890" height="186" alt="Image" src="https://github.com/user-attachments/assets/d1b5d105-608f-4be7-8a7b-c2c46933f45f" />
 
@@ -130,18 +130,18 @@ Install & Configure AWS CLI on your local machine to create a Jenkins Server on 
 
 AWSCLI Installation Script
 
-``bash
+```bash
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 sudo apt install unzip -y
 unzip awscliv2.zip
 sudo ./aws/install
-``
+```
 
 Run the below command, and add your keys
 
-``bash
+```bash
 aws configure
-``
+```
 AWS Access Key ID:
 
 AWS Secret Access Key:
@@ -151,26 +151,112 @@ Default region name
 Default output format
 
 
-Step 3: Deploy the Jenkins Server(EC2) using Terraform
+### Step 3: Deploy the Jenkins Server(EC2) using Terraform
 
-Clone the Git repository- https://github.com/AmanPathak-DevOps/End-to-End-Kubernetes-Three-Tier-DevSecOps-Project
+<img width="1890" height="263" alt="Image" src="https://github.com/user-attachments/assets/8974aab4-104c-4473-9f49-a164c6c5a9ad" />
+
+Clone the Git repository
+
+```bash
+git clone https://github.com/Ahmedlekan/bookingWebApp.git
+```
 
 Navigate to the Jenkins-Server-TF
 
-Do some modifications to the backend.tf file, such as changing the bucket name and dynamodb table(make sure you have created both manually on AWS Cloud).
+Do some modifications to the terraform.tf file, such as changing the bucket name (make sure you have created it manually on AWS Cloud).
+
+<img width="1459" height="536" alt="Image" src="https://github.com/user-attachments/assets/95b88c43-8f17-4808-8180-37bdd82a4150" />
+
+
+Initialise the terraform backend by running the command below
+
+```bash
+terraform init
+```
+
+<img width="1219" height="514" alt="Image" src="https://github.com/user-attachments/assets/be8be9f0-ae1e-4d7c-b6fa-157d61498231" />
+
+Run the command below to format properly
+
+```bash
+terraform fmt
+```
+
+Run the command below to check the syntax error
+
+```bash
+terraform validate
+```
+
+Run the command below to check the plan of all the resources that will be created on AWS
+
+```bash
+terraform plan
+```
+
+Now, run the below command to create the infrastructure on AWS Cloud, which will take 3 to 4 minutes maximum
+
+```bash
+terraform apply
+```
+
+Now, connect to your Jenkins server by clicking on Connect.
+
+<img width="1890" height="263" alt="Image" src="https://github.com/user-attachments/assets/8974aab4-104c-4473-9f49-a164c6c5a9ad" />
+
+Copy the SSH command and paste it on your local machine.
+
+<img width="1662" height="647" alt="Image" src="https://github.com/user-attachments/assets/14577cea-ea2b-472b-a245-1070b8c19c02" />
 
 
 
 
 
+### Step 4: Configure the Jenkins
+Now, we logged into our Jenkins server.
+
+We have installed some services such as Jenkins, Docker, Sonarqube, Terraform, Kubectl, AWS CLI, and Trivy
+using terraform tools-install.sh to input the script ec2 user data.
+
+Let’s validate whether all our installed or not.
+
+```bash
+jenkins --version
+docker --version
+docker ps
+terraform --version
+kubectl version
+aws --version
+trivy --version
+eksctl --version
+```
+
+Now, we have to configure Jenkins. So, copy the public IP of your Jenkins Server and paste it into your favourite browser on port 8080.
+
+<img width="941" height="509" alt="Image" src="https://github.com/user-attachments/assets/6e314119-9ab0-4c4a-bc4b-bb91289a0304" />
+
+On your local machine, enter this command to get the password for your Jenkins server
+
+```bash
+systemctl status Jenkins.service 
+```
+
+Click on continue
 
 
+Click on Install suggested plugins. The plugins will be installed
 
+<img width="904" height="243" alt="Image" src="https://github.com/user-attachments/assets/b897f3e2-8eaf-4666-8dc4-2ab0c6665470" />
 
+After installing the plugins, continue as admin
 
+<img width="933" height="513" alt="Image" src="https://github.com/user-attachments/assets/142da2d1-09fd-43ad-875f-f839505732e1" />
 
+Click on Start using Jenkins
 
+The Jenkins Dashboard will look like the snippet below
 
+<img width="1853" height="818" alt="Image" src="https://github.com/user-attachments/assets/87f094ab-7ab3-4653-bd21-837fc2f4f6f8" />
 
 
 
