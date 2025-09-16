@@ -1,4 +1,4 @@
-import { HotelType } from '../../../backend/src/shared/types'
+import { HotelType } from '../types'
 import { Link } from 'react-router-dom'
 
 

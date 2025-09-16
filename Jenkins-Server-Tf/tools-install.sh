@@ -7,8 +7,10 @@ sudo apt update -y
 # -----------------
 # Install Java
 # -----------------
-sudo apt install -y openjdk-17-jre openjdk-17-jdk
-java --version
+# sudo apt install -y openjdk-17-jre openjdk-17-jdk
+# java --version
+
+sudo apt install -y fontconfig openjdk-21-jre
 
 # -----------------
 # Install Jenkins

@@ -1,4 +1,4 @@
-import { PaymentIntentResponse, UserType } from '../../../../backend/src/shared/types'
+import { UserType, PaymentIntentResponse } from "../../types"
 import {useForm} from "react-hook-form"
 import { CardElement } from '@stripe/react-stripe-js'
 import { useStripe, useElements } from '@stripe/react-stripe-js'
