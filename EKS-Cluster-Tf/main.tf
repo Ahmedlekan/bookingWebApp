@@ -7,9 +7,18 @@ provider "aws" {
   region = var.region
 }
 
+provider "helm" {
+
+}
+
+
 data "aws_availability_zones" "available" {}
 
 locals {
   cluster_name = var.clusterName
 }
 
+# OIDC Provider
+data "tls_certificate" "eks" {
+  url = module.eks.cluster_oidc_issuer_url
+}

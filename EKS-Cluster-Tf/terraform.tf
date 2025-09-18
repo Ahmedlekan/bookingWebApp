@@ -9,6 +9,14 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.23.0"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.13.0"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 
   backend "s3" {
@@ -17,5 +25,5 @@ terraform {
     region = "us-east-1"
   }
 
-  required_version = "~> 1.6.3"
+  required_version = "~> 1.13.2"
 }
