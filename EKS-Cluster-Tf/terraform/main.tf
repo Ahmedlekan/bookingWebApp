@@ -4,18 +4,17 @@ provider "kubernetes" {
 }
 
 provider "aws" {
-  region = var.region
+  region = var.aws_region
 }
 
 provider "helm" {
 
 }
 
-
 data "aws_availability_zones" "available" {}
 
 locals {
-  cluster_name = var.clusterName
+  cluster_name = var.eks_clusterName
 }
 
 # OIDC Provider

@@ -10,7 +10,7 @@ output "cluster_endpoint" {
 
 output "region" {
   description = "Amazon Web Service EKS Cluster region"
-  value       = var.region
+  value       = var.aws_region
 }
 
 output "load_balancer_controller_role_arn" {

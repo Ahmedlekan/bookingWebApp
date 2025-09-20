@@ -1,0 +1,214 @@
+// Pipeline properties and configuration
+properties([
+    parameters([  // Define build parameters that users can input
+        string(  // String parameter for environment
+            defaultValue: 'dev',  // Default value if user doesn't specify
+            name: 'ENVIRONMENT',  // Parameter name (accessed via params.ENVIRONMENT)
+            description: 'Deployment environment (dev, staging, prod)'  // Help text for users
+        ),
+        choice(  // Dropdown choice parameter
+            choices: ['plan', 'apply', 'destroy'],  // Available options
+            name: 'TF_ACTION',  // Parameter name (accessed via params.TF_ACTION)
+            description: 'Terraform action to perform'  // Help text
+        ),
+        booleanParam(  // Boolean checkbox parameter
+            name: 'AUTO_APPROVE',  // Parameter name
+            defaultValue: true,  // Default checked
+            description: 'Auto-approve Terraform actions'  // Help text
+        )
+    ]),
+    buildDiscarder(logRotator(numToKeepStr: '10')),  // Keep only last 10 builds to save disk space
+    disableConcurrentBuilds()  // Prevent multiple simultaneous runs to avoid Terraform state conflicts
+])
+
+// Start of pipeline definition
+pipeline {
+    // agent {  // Specify where the pipeline should run
+    //     label 'terraform-aws'  // Run on Jenkins agents with this label (agents with Terraform/AWS CLI pre-installed)
+    // }
+
+    agent any
+
+    environment {  // Set environment variables available throughout pipeline
+        AWS_REGION = 'us-east-1'  // AWS region to operate in
+        TF_DIR = 'EKS-Cluster-TF/terraform'  // Directory containing Terraform code
+        AWS_CREDS = 'aws-creds'  // Jenkins credentials ID for AWS access
+        TF_VERSION = '1.13.2'  // Specific Terraform version to ensure consistency
+    }
+
+    stages {  // Define the sequence of stages in the pipeline
+        stage('Clean Workspace') {  // First stage: prepare workspace
+            steps {  // Actions to perform in this stage
+                cleanWs()  // Clean the workspace to remove files from previous builds
+                echo "Starting Terraform ${params.TF_ACTION} for ${params.ENVIRONMENT} environment"  // Log message
+            }
+        }
+
+        stage('Git Checkout') {  // Get code from version control
+            steps {
+                git(  // Clone git repository
+                    branch: 'main',  // Branch to checkout
+                    url: "https://github.com/Ahmedlekan/bookingWebApp.git",  // Repository URL
+                    credentialsId: 'github-creds',  // Jenkins credentials ID for GitHub access (for private repos)
+                )
+                sh 'git log -1 --oneline'  // Show the last commit information for traceability
+
+                sh '''
+                    echo "Current directory: $(pwd)"
+                    echo "Listing EKS-Cluster-TF contents:"
+                    ls -la EKS-Cluster-TF/
+                    echo "Listing Terraform contents:"
+                    ls -la EKS-Cluster-TF/terraform/
+                '''
+            }
+        }
+
+        stage('Terraform Setup') {  // Prepare Terraform environment
+            steps {
+                withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {  // Inject AWS credentials into environment
+                    script {  // Groovy script block for complex logic
+                        // Install specific Terraform version using tfswitch
+                        sh """
+                            tfswitch ${TF_VERSION}  // Use tfswitch to ensure correct Terraform version
+                            terraform version  // Verify Terraform version
+                        """
+                        
+                        // Initialize Terraform 
+                        sh """
+                            terraform -chdir=${TF_DIR} init -reconfigure -input=false
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Validate') {  // Validate Terraform configuration syntax
+            steps {
+                withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
+                    sh "terraform -chdir=${TF_DIR} validate"  // Check if Terraform code is valid
+                }
+            }
+        }
+
+        stage('Terraform Plan') {  // Generate execution plan
+            when {  // Conditional execution: only run this stage if condition is met
+                expression { params.TF_ACTION in ['plan', 'apply'] }  // Run for plan or apply actions
+            }
+            steps {
+                withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
+                    sh """
+                        terraform -chdir=${TF_DIR} plan \  // Generate execution plan
+                        -var-file=${params.ENVIRONMENT}.tfvars \  // Load environment-specific variables
+                        -out=tfplan.${params.ENVIRONMENT} \  // Save plan to file for later use
+                        -input=false  // Non-interactive mode
+                    """
+                    
+                    // Save the plan file as a build artifact for review and audit
+                    archiveArtifacts artifacts: "${TF_DIR}/tfplan.${params.ENVIRONMENT}", allowEmptyArchive: true
+                }
+            }
+        }
+
+        stage('Terraform Apply') {  // Apply Terraform changes
+            when {  // Conditional execution
+                expression { params.TF_ACTION == 'apply' }  // Only run for apply action
+            }
+            steps {
+                withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
+                    script {
+                        def approveFlag = params.AUTO_APPROVE ? "-auto-approve" : ""  // Conditionally add auto-approve flag
+                        sh """
+                            terraform -chdir=${TF_DIR} apply ${approveFlag} \  // Apply changes using saved plan
+                            -input=false tfplan.${params.ENVIRONMENT}  // Use the previously generated plan file
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Destroy') {  // Destroy infrastructure
+            when {  // Conditional execution
+                expression { params.TF_ACTION == 'destroy' }  // Only run for destroy action
+                beforeInput: true  // Evaluate condition before waiting for input
+            }
+            steps {
+                script {
+                    // Manual approval for destroy operations (safety mechanism)
+                    if (params.AUTO_APPROVE) {  // Only ask for confirmation if auto-approve is enabled
+                        input(  // Pause pipeline and wait for user input/approval
+                            id: 'confirm-destroy',  // Unique ID for this input step
+                            message: "Are you sure you want to DESTROY ${params.ENVIRONMENT} environment?",  // Warning message
+                            ok: 'Destroy'  // Text for approval button
+                        )
+                    }
+                    
+                    withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
+                        def approveFlag = params.AUTO_APPROVE ? "-auto-approve" : ""  // Conditionally add auto-approve flag
+                        sh """
+                            terraform -chdir=${TF_DIR} destroy ${approveFlag} \  // Destroy infrastructure
+                            -var-file=${params.ENVIRONMENT}.tfvars \  // Load environment-specific variables
+                            -input=false  // Non-interactive mode
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Update Kubeconfig') {  // Configure kubectl to access the new cluster
+            when {  // Conditional execution
+                expression { params.TF_ACTION == 'apply' }  // Only run after successful apply
+            }
+            steps {
+                withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
+                    script {
+                        // Extract cluster name from Terraform output
+                        def clusterName = sh(
+                            script: "terraform -chdir=${TF_DIR} output -raw cluster_name",  // Get raw output value
+                            returnStdout: true  // Capture the output as string
+                        ).trim()  // Remove any whitespace
+                        
+                        // Update kubeconfig to access the EKS cluster
+                        sh """
+                            aws eks update-kubeconfig \  // AWS CLI command to configure kubectl
+                            --region ${AWS_REGION} \  // AWS region
+                            --name ${clusterName}  // EKS cluster name
+                        """
+                        
+                        // Test cluster access to verify configuration worked
+                        sh "kubectl cluster-info"
+                    }
+                }
+            }
+        }
+    }
+
+    post {  // Post-build actions that run after all stages complete
+        always {  // Run regardless of build success/failure
+            // Clean up plan files to avoid accumulating artifacts
+            sh "rm -f ${TF_DIR}/tfplan.${params.ENVIRONMENT} || true"  // || true: don't fail if file doesn't exist
+            
+            // Send notifications or log summary
+            script {
+                def duration = currentBuild.durationString  // Get build duration
+                def action = params.TF_ACTION.toUpperCase()  // Uppercase for readability
+                def env = params.ENVIRONMENT.toUpperCase()  // Uppercase for readability
+                
+                echo "Terraform ${action} for ${env} completed in ${duration}"  // Summary message
+            }
+        }
+        
+        success {  // Run only if build succeeded
+            echo "✅ Pipeline executed successfully!"
+            // Optional: Add Slack/Teams/MS Teams notification here
+        }
+        
+        failure {  // Run only if build failed
+            echo "❌ Pipeline failed!"
+            // Optional: Add failure notification to chat channels
+        }
+        
+        unstable {  // Run if build is unstable
+            echo "⚠️ Pipeline unstable!"
+        }
+    }
+}
