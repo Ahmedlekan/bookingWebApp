@@ -210,8 +210,6 @@ Copy the SSH command and paste it on your local machine.
 
 
 
-
-
 ### Step 4: Configure the Jenkins
 Now, we logged into our Jenkins server.
 
@@ -257,6 +255,186 @@ Click on Start using Jenkins
 The Jenkins Dashboard will look like the snippet below
 
 <img width="1853" height="818" alt="Image" src="https://github.com/user-attachments/assets/87f094ab-7ab3-4653-bd21-837fc2f4f6f8" />
+
+
+### Step 5: Deploy EKS Cluster using Terraform and Jenkins
+
+This step automates the deployment of an Amazon EKS cluster and AWS Load Balancer Controller using Terraform through a Jenkins pipeline. This infrastructure-as-code approach ensures reproducibility, version control, and automated management of your Kubernetes infrastructure.
+
+Jenkins Setup
+
+1. Install Required Jenkins Plugins
+
+Go to Manage Jenkins → Plugins → Available plugins and install:
+
+- AWS Credentials plugin
+- Pipeline: AWS Steps plugin
+
+2. Configure AWS Credentials in Jenkins
+
+Go to Manage Jenkins → Credentials → System → Global credentials
+
+Click Add Credentials
+
+Select AWS Credentials as Kind
+
+Enter the following:
+
+- ID: aws-creds
+- Access Key ID: Your AWS Access Key
+- Secret Access Key: Your AWS Secret Access Key
+
+Click Create
+
+3. Configure GitHub Credentials (For Private Repositories)
+
+Go to Manage Jenkins → Credentials → System → Global credentials
+
+Click Add Credentials
+
+Select Username with password as Kind
+
+Enter the following:
+
+- ID: github-creds
+- Username: Your GitHub username
+- Password: Your GitHub Personal Access Token
+
+Click Create
+
+
+### Terraform EKS Cluster Deployment
+
+Check the github file
+
+Repository Structure
+
+bookingWebApp/
+├── EKS-Cluster-TF/
+│   ├── Jenkinsfile
+│   └── terraform/
+│       ├── main.tf
+│       ├── variables.tf
+│       ├── providers.tf
+│       ├── iam.tf
+│       ├── helm.tf
+│       ├── dev.tfvars
+|       ├── dev.tfvars
+│       └── prod.tfvars
+
+### Terraform Configuration
+
+The Terraform code includes:
+
+- EKS Cluster with managed node groups
+- IAM Roles and Policies for cluster operations
+- AWS Load Balancer Controller setup with Helm
+- OIDC Provider for IAM Roles for Service Accounts (IRSA)
+- S3 Backend for Terraform state management
+
+### Jenkins Pipeline Execution
+
+Access the Jenkins Pipeline:
+
+- Create a new Pipeline job in Jenkins
+- Set Definition to "Pipeline script from SCM"
+- Configure SCM with your repository URL and credentials
+- Set Script Path to EKS-Cluster-TF/Jenkinsfile
+
+Build with Parameters:
+
+- ENVIRONMENT: Select environment (dev, staging, prod)
+- TF_ACTION: Choose Terraform action (plan, apply, destroy)
+- AUTO_APPROVE: Enable/disable auto-approval for destructive operations
+
+Pipeline Stages:
+
+- Git Checkout: Clones the repository
+- Terraform Setup: Initializes Terraform with S3 backend
+- Terraform Validate: Validates Terraform configuration
+- Terraform Plan: Generates execution plan (for plan/apply actions)
+- Terraform Apply: Applies changes (if TF_ACTION=apply)
+- Terraform Destroy: Destroys infrastructure (if TF_ACTION=destroy, with approval)
+
+Update Kubeconfig: Configures kubectl to access the new cluster
+
+Verification
+
+Check Cluster Status
+
+```bash
+# Verify EKS cluster creation
+aws eks describe-cluster --name bookingwebapp-eks --region us-east-1
+
+# Update kubeconfig and check nodes
+aws eks update-kubeconfig --region us-east-1 --name bookingwebapp-eks
+kubectl get nodes
+```
+
+Verify Load Balancer Controller
+
+```bash
+# Check Load Balancer Controller deployment
+kubectl get deployment -n kube-system aws-load-balancer-controller
+
+# Check controller pods
+kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
+
+# View controller logs
+kubectl logs -n kube-system deployment/aws-load-balancer-controller -f
+```
+
+### Benefits of Terraform Approach
+
+✅ Infrastructure as Code
+
+- Version-controlled infrastructure changes
+- Repeatable and consistent deployments
+- Complete audit trail of all modifications
+
+✅ Automated Management
+
+- No manual CLI commands required
+- Automated dependency management
+- Integrated security best practices
+
+✅ Environment Consistency
+
+- identical configurations across dev, staging, prod
+- Parameterized deployments for different environments
+- Reduced human error
+
+✅ Cost Optimization
+
+- Automated resource cleanup with destroy operations
+- Efficient resource provisioning
+- Tagging and resource management
+
+### Troubleshooting
+
+Common Issues and Solutions
+
+- IAM Permission Errors:
+
+  - Verify AWS credentials have sufficient permissions
+  - Check IAM policies attached to Jenkins credentials
+
+- Terraform State Locking:
+
+  - Ensure DynamoDB table exists for state locking (if configured)
+  - Check S3 bucket permissions
+
+- Load Balancer Controller Issues:
+
+  - Verify OIDC provider is properly configured
+  - Check IAM role annotations on service account
+  - Validate network connectivity between pods and AWS API
+
+- Node Group Failures:
+
+  - Check EC2 instance limits in AWS account
+  - Verify subnet configurations and IP availability
+
 
 
 
