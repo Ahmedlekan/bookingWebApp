@@ -67,9 +67,9 @@ module "eks" {
     }
 
     tags = {
-    Environment = "production"
-    Terraform   = "true"
-    Project     = "bookingwebapp"
+      Environment = "production"
+      Terraform   = "true"
+      Project     = "bookingwebapp"
     }
   }
 }

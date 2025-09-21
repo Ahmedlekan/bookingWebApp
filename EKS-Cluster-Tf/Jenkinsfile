@@ -31,7 +31,7 @@ pipeline {
 
     environment {  // Set environment variables available throughout pipeline
         AWS_REGION = 'us-east-1'  // AWS region to operate in
-        TF_DIR = 'EKS-Cluster-TF/terraform'  // Directory containing Terraform code
+        TF_DIR = 'EKS-Cluster-Tf/terraform'  // Directory containing Terraform code
         AWS_CREDS = 'aws-creds'  // Jenkins credentials ID for AWS access
         TF_VERSION = '1.13.2'  // Specific Terraform version to ensure consistency
     }
@@ -182,8 +182,8 @@ pipeline {
         }
     }
 
-    post {  // Post-build actions that run after all stages complete
-        always {  // Run regardless of build success/failure
+    post { 
+        always { 
             // Clean up plan files to avoid accumulating artifacts
             sh "rm -f ${TF_DIR}/tfplan.${params.ENVIRONMENT} || true"  // || true: don't fail if file doesn't exist
             
@@ -197,17 +197,15 @@ pipeline {
             }
         }
         
-        success {  // Run only if build succeeded
+        success { 
             echo "✅ Pipeline executed successfully!"
-            // Optional: Add Slack/Teams/MS Teams notification here
         }
         
-        failure {  // Run only if build failed
+        failure { 
             echo "❌ Pipeline failed!"
-            // Optional: Add failure notification to chat channels
         }
         
-        unstable {  // Run if build is unstable
+        unstable { 
             echo "⚠️ Pipeline unstable!"
         }
     }

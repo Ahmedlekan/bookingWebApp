@@ -53,8 +53,8 @@ override.tf.json
 !override.tf.json.example
 
 # Terraform variable files containing sensitive data
-*.tfvars
-*.tfvars.json
+# *.tfvars
+# *.tfvars.json
 
 # Ignore CLI configuration files
 .terraformrc

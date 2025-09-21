@@ -24,12 +24,15 @@ resource "aws_iam_role" "aws_load_balancer_controller" {
 }
 
 # IAM Policy (using AWS managed policy)
-data "aws_iam_policy" "aws_load_balancer_controller" {
-  arn = "arn:aws:iam::aws:policy/AWSLoadBalancerControllerIAMPolicy"
+resource "aws_iam_policy" "aws_load_balancer_controller" {
+  name        = "AWSLoadBalancerControllerIAMPolicy-${module.eks.cluster_name}"
+  description = "Custom IAM policy for AWS Load Balancer Controller"
+  policy      = file("${path.module}/iam_policy.json") # ← Load from local file
 }
 
 # Policy Attachment
 resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
   role       = aws_iam_role.aws_load_balancer_controller.name
-  policy_arn = data.aws_iam_policy.aws_load_balancer_controller.arn
+  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
 }
+
