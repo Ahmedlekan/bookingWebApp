@@ -1,83 +1,69 @@
-// Pipeline properties and configuration
 properties([
-    parameters([  // Define build parameters that users can input
-        string(  // String parameter for environment
-            defaultValue: 'dev',  // Default value if user doesn't specify
-            name: 'ENVIRONMENT',  // Parameter name (accessed via params.ENVIRONMENT)
-            description: 'Deployment environment (dev, staging, prod)'  // Help text for users
+    parameters([ 
+        string(  
+            defaultValue: 'dev',  
+            name: 'ENVIRONMENT', 
+            description: 'Deployment environment (dev, staging, prod)' 
         ),
-        choice(  // Dropdown choice parameter
-            choices: ['plan', 'apply', 'destroy'],  // Available options
-            name: 'TF_ACTION',  // Parameter name (accessed via params.TF_ACTION)
-            description: 'Terraform action to perform'  // Help text
+        choice(
+            choices: ['plan', 'apply', 'destroy'], 
+            name: 'TF_ACTION',
+            description: 'Terraform action to perform'  
         ),
-        booleanParam(  // Boolean checkbox parameter
-            name: 'AUTO_APPROVE',  // Parameter name
-            defaultValue: true,  // Default checked
-            description: 'Auto-approve Terraform actions'  // Help text
+        booleanParam( 
+            name: 'AUTO_APPROVE',  
+            defaultValue: true,  
+            description: 'Auto-approve Terraform actions' 
         )
     ]),
     buildDiscarder(logRotator(numToKeepStr: '10')),  // Keep only last 10 builds to save disk space
     disableConcurrentBuilds()  // Prevent multiple simultaneous runs to avoid Terraform state conflicts
 ])
 
-// Start of pipeline definition
 pipeline {
-    // agent {  // Specify where the pipeline should run
-    //     label 'terraform-aws'  // Run on Jenkins agents with this label (agents with Terraform/AWS CLI pre-installed)
+    // agent {
+    //     label 'terraform-aws'
     // }
-
     agent any
 
     environment {  // Set environment variables available throughout pipeline
-        AWS_REGION = 'us-east-1'  // AWS region to operate in
-        TF_DIR = 'EKS-Cluster-Tf/terraform'  // Directory containing Terraform code
-        AWS_CREDS = 'aws-creds'  // Jenkins credentials ID for AWS access
-        TF_VERSION = '1.13.2'  // Specific Terraform version to ensure consistency
+        AWS_REGION = 'us-east-1'
+        TF_DIR = 'EKS-Cluster-Tf/terraform'
+        AWS_CREDS = 'aws-creds'
+        TF_VERSION = '1.13.2' 
     }
 
     stages {  // Define the sequence of stages in the pipeline
-        stage('Clean Workspace') {  // First stage: prepare workspace
-            steps {  // Actions to perform in this stage
+        stage('Clean Workspace') {
+            steps { 
                 cleanWs()  // Clean the workspace to remove files from previous builds
-                echo "Starting Terraform ${params.TF_ACTION} for ${params.ENVIRONMENT} environment"  // Log message
+                echo "Starting Terraform ${params.TF_ACTION} for ${params.ENVIRONMENT} environment" 
             }
         }
 
-        stage('Git Checkout') {  // Get code from version control
+        stage('Git Checkout') {
             steps {
-                git(  // Clone git repository
+                git(  
                     branch: 'main',  // Branch to checkout
-                    url: "https://github.com/Ahmedlekan/bookingWebApp.git",  // Repository URL
-                    credentialsId: 'github-creds',  // Jenkins credentials ID for GitHub access (for private repos)
+                    url: "https://github.com/Ahmedlekan/bookingWebApp.git", 
+                    // credentialsId: 'github-creds',  // (for private repos)
                 )
                 sh 'git log -1 --oneline'  // Show the last commit information for traceability
 
                 sh '''
                     echo "Current directory: $(pwd)"
-                    echo "Listing EKS-Cluster-TF contents:"
-                    ls -la EKS-Cluster-TF/
+                    echo "Listing EKS-Cluster-Tf contents:"
+                    ls -la EKS-Cluster-Tf/
                     echo "Listing Terraform contents:"
-                    ls -la EKS-Cluster-TF/terraform/
+                    ls -la EKS-Cluster-Tf/terraform/
                 '''
             }
         }
 
-        stage('Terraform Setup') {  // Prepare Terraform environment
+        stage('Init') {
             steps {
-                withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {  // Inject AWS credentials into environment
-                    script {  // Groovy script block for complex logic
-                        // Install specific Terraform version using tfswitch
-                        sh """
-                            tfswitch ${TF_VERSION}  // Use tfswitch to ensure correct Terraform version
-                            terraform version  // Verify Terraform version
-                        """
-                        
-                        // Initialize Terraform 
-                        sh """
-                            terraform -chdir=${TF_DIR} init -reconfigure -input=false
-                        """
-                    }
+                withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                    sh 'terraform -chdir=EKS-Cluster-Tf/terraform/ init'
                 }
             }
         }
@@ -85,22 +71,19 @@ pipeline {
         stage('Terraform Validate') {  // Validate Terraform configuration syntax
             steps {
                 withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
-                    sh "terraform -chdir=${TF_DIR} validate"  // Check if Terraform code is valid
+                    sh "terraform -chdir=${TF_DIR}/ validate" 
                 }
             }
         }
 
-        stage('Terraform Plan') {  // Generate execution plan
+        stage('Terraform Plan') { 
             when {  // Conditional execution: only run this stage if condition is met
                 expression { params.TF_ACTION in ['plan', 'apply'] }  // Run for plan or apply actions
             }
             steps {
                 withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
                     sh """
-                        terraform -chdir=${TF_DIR} plan \  // Generate execution plan
-                        -var-file=${params.ENVIRONMENT}.tfvars \  // Load environment-specific variables
-                        -out=tfplan.${params.ENVIRONMENT} \  // Save plan to file for later use
-                        -input=false  // Non-interactive mode
+                        terraform -chdir=${TF_DIR} plan -var-file=${params.ENVIRONMENT}.tfvars -out=tfplan.${params.ENVIRONMENT} -input=false
                     """
                     
                     // Save the plan file as a build artifact for review and audit
@@ -110,16 +93,16 @@ pipeline {
         }
 
         stage('Terraform Apply') {  // Apply Terraform changes
-            when {  // Conditional execution
+            when { 
                 expression { params.TF_ACTION == 'apply' }  // Only run for apply action
             }
             steps {
                 withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
                     script {
                         def approveFlag = params.AUTO_APPROVE ? "-auto-approve" : ""  // Conditionally add auto-approve flag
+                        // Apply changes using saved plan and Use the previously generated plan file
                         sh """
-                            terraform -chdir=${TF_DIR} apply ${approveFlag} \  // Apply changes using saved plan
-                            -input=false tfplan.${params.ENVIRONMENT}  // Use the previously generated plan file
+                            terraform -chdir=${TF_DIR} apply ${approveFlag} -input=false tfplan.${params.ENVIRONMENT}  
                         """
                     }
                 }
@@ -127,27 +110,25 @@ pipeline {
         }
 
         stage('Terraform Destroy') {  // Destroy infrastructure
-            when {  // Conditional execution
+            when { 
                 expression { params.TF_ACTION == 'destroy' }  // Only run for destroy action
-                beforeInput: true  // Evaluate condition before waiting for input
             }
             steps {
                 script {
                     // Manual approval for destroy operations (safety mechanism)
                     if (params.AUTO_APPROVE) {  // Only ask for confirmation if auto-approve is enabled
-                        input(  // Pause pipeline and wait for user input/approval
+                        input(  
                             id: 'confirm-destroy',  // Unique ID for this input step
-                            message: "Are you sure you want to DESTROY ${params.ENVIRONMENT} environment?",  // Warning message
-                            ok: 'Destroy'  // Text for approval button
+                            message: "Are you sure you want to DESTROY ${params.ENVIRONMENT} environment?",
+                            ok: 'Destroy' 
                         )
                     }
                     
                     withAWS(credentials: "${AWS_CREDS}", region: "${AWS_REGION}") {
                         def approveFlag = params.AUTO_APPROVE ? "-auto-approve" : ""  // Conditionally add auto-approve flag
+                        // Destroy infrastructure, Load environment-specific variables and Non-interactive mode
                         sh """
-                            terraform -chdir=${TF_DIR} destroy ${approveFlag} \  // Destroy infrastructure
-                            -var-file=${params.ENVIRONMENT}.tfvars \  // Load environment-specific variables
-                            -input=false  // Non-interactive mode
+                            terraform -chdir=${TF_DIR} destroy ${approveFlag} -var-file=${params.ENVIRONMENT}.tfvars -input=false 
                         """
                     }
                 }
@@ -167,11 +148,10 @@ pipeline {
                             returnStdout: true  // Capture the output as string
                         ).trim()  // Remove any whitespace
                         
-                        // Update kubeconfig to access the EKS cluster
+                        // Update kubeconfig to access the EKS cluster. 
+                        // AWS CLI command to configure kubectl, AWS region and EKS cluster name
                         sh """
-                            aws eks update-kubeconfig \  // AWS CLI command to configure kubectl
-                            --region ${AWS_REGION} \  // AWS region
-                            --name ${clusterName}  // EKS cluster name
+                            aws eks update-kubeconfig --region ${AWS_REGION} --name ${clusterName}
                         """
                         
                         // Test cluster access to verify configuration worked

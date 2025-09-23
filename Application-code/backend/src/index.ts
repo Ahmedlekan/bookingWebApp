@@ -21,13 +21,12 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING as string)
 
 const PORT = process.env.PORT || 7000;
 
-
 const app = express()
 app.use(cookierParser())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [process.env.FRONTEND_URL || "http://localhost:3000", "http://localhost:3000"],
     credentials: true,
     methods: ["GET","POST","PUT","DELETE","OPTIONS"],
     allowedHeaders: [
@@ -50,6 +49,7 @@ app.use("/api/my-hotels", myHotelsRoutes)
 // list all my hotels from data base endpoint setup
 app.use("/api/hotels", hotelRoutes)
 app.use("/api/my-bookings", bookingRoutes)  
+
 
 app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(pathToDist, "index.html"));
