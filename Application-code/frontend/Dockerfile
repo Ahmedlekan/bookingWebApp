@@ -15,7 +15,6 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
 # Copy built assets from build stage - CORRECTED PATH
@@ -24,3 +23,8 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
+
+# BUILD AND RUN
+
+# docker build -t frontend-prod .
+# docker run -d -p 3000:80 --name frontend-pro frontend-prod
