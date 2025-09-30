@@ -74,7 +74,6 @@ module "eks" {
 }
 
 resource "aws_iam_openid_connect_provider" "eks" {
-  count = length(try(data.aws_iam_openid_connect_provider.eks.arn, "")) == 0 ? 1 : 0
   
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
