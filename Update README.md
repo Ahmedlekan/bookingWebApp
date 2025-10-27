@@ -209,8 +209,8 @@ Copy the SSH command and paste it on your local machine.
 <img width="1662" height="647" alt="Image" src="https://github.com/user-attachments/assets/14577cea-ea2b-472b-a245-1070b8c19c02" />
 
 
-
 ### Step 4: Configure the Jenkins
+
 Now, we logged into our Jenkins server.
 
 We have installed some services such as Jenkins, Docker, Sonarqube, Terraform, Kubectl, AWS CLI, and Trivy
@@ -356,6 +356,48 @@ Pipeline Stages:
 - Terraform Apply: Applies changes (if TF_ACTION=apply)
 - Terraform Destroy: Destroys infrastructure (if TF_ACTION=destroy, with approval)
 
+
+Create a Bastian Host
+
+The ec2 userdata for the bastian host
+
+installing all the necessary tools in bastian host user data
+
+#!/bin/bash
+
+apt-get update -y
+
+snap install amazon-ssm-agent --classic
+systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
+systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install -y unzip
+unzip awscliv2.zip
+sudo ./aws/install
+rm -rf awscliv2.zip aws/
+
+sudo snap install helm --classic
+
+curl -LO "https://dl.k8s.io/release/v1.28.4/bin/linux/amd64/kubectl"
+sudo chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+kubectl version --client
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+Allow bastian host traffic from the eks control sec group
+
+Add the bastion role to EKS aws-auth
+
+eksctl create iamidentitymapping \
+  --cluster bookingwebapp-eks \
+  --arn arn:aws:iam::123456789:role/jumper-role \
+  --username bastion-user \
+  --group system:masters
+
 Update Kubeconfig: Configures kubectl to access the new cluster
 
 Verification
@@ -434,6 +476,83 @@ Common Issues and Solutions
 
   - Check EC2 instance limits in AWS account
   - Verify subnet configurations and IP availability
+
+
+### Step 6: Install & Configure ArgoCD
+
+We will be deploying our application on a mern-tier namespace.
+
+To do that, we will create a mern-tier namespace on EKS
+
+```bash
+kubectl create namespace mern-tier
+```
+<img width="707" height="45" alt="Image" src="https://github.com/user-attachments/assets/ffdc6662-a141-4a5e-8172-95e769e2d1dc" />
+
+```bash
+kubectl apply -n mern-rier -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml
+```
+
+All pods must be running. To validate, run the command below
+
+```bash
+kubectl get pods -n mern-tier
+```
+```bash
+ kubectl get svc -n mern-tier
+```
+<img width="1306" height="377" alt="Image" src="https://github.com/user-attachments/assets/f616efb4-c66a-446f-88fa-4c554bdc6952" />
+
+Now, expose the argoCD server as a LoadBalancer by editing the argo-server using kubernetes manifest 
+
+```bash
+ kubectl edit svc argocd-server -n mern-tier
+```
+<img width="1897" height="988" alt="Image" src="https://github.com/user-attachments/assets/cb2a602a-7e87-44a7-b260-880b15a94a4a" />
+
+Edit the ClassicIp to LoadBalancer
+
+<img width="1917" height="1000" alt="Image" src="https://github.com/user-attachments/assets/275db254-8f0f-4121-a49c-035776e8d9c3" />
+
+Or you run the command below
+
+```bash
+kubectl patch svc argocd-server -n mern-tier -p '{"spec": {"type": "LoadBalancer"}}'
+```
+
+You can validate whether the Load Balancer is created or not by going to the AWS ec2 loadbalancer Console
+
+<img width="1914" height="605" alt="Image" src="https://github.com/user-attachments/assets/b79b44f5-c4df-4b73-9521-0e52d177b879" />
+
+To access the argoCD, copy the LoadBalancer DNS and hit it on your favourite browser.
+
+You will get a warning like the snippet below.
+
+Click on Advanced.
+
+<img width="873" height="230" alt="Image" src="https://github.com/user-attachments/assets/791eceb1-9b8e-4d12-a66c-00206e32344b" />
+
+
+Click on the link below, which is appearing under Hide advanced
+
+<img width="748" height="321" alt="Image" src="https://github.com/user-attachments/assets/96da920b-7fca-457b-a9ef-d49dd3d92ed2" />
+
+The username for the agrocd is "admin"
+
+Now, we need to get the password for our argoCD server to perform the deployment.
+
+The password is stored in a Kubernetes secret
+
+```bash
+kubectl -n mern-tier get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
+```
+
+Here is our ArgoCD Dashboard.
+
+<img width="1917" height="573" alt="Image" src="https://github.com/user-attachments/assets/242cbdb4-3c77-4911-89c4-4e0acd49c09f" />
+
+
+
 
 
 
