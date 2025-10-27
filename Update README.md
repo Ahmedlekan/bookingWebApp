@@ -363,6 +363,7 @@ The ec2 userdata for the bastian host
 
 installing all the necessary tools in bastian host user data
 
+```bash
 #!/bin/bash
 
 apt-get update -y
@@ -387,16 +388,19 @@ kubectl version --client
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 sudo mv /tmp/eksctl /usr/local/bin
 eksctl version
+```
 
 Allow bastian host traffic from the eks control sec group
 
 Add the bastion role to EKS aws-auth
 
+```bash
 eksctl create iamidentitymapping \
   --cluster bookingwebapp-eks \
   --arn arn:aws:iam::123456789:role/jumper-role \
   --username bastion-user \
   --group system:masters
+```
 
 Update Kubeconfig: Configures kubectl to access the new cluster
 
