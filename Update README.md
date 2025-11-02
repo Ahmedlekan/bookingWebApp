@@ -257,6 +257,21 @@ The Jenkins Dashboard will look like the snippet below
 <img width="1853" height="818" alt="Image" src="https://github.com/user-attachments/assets/87f094ab-7ab3-4653-bd21-837fc2f4f6f8" />
 
 
+### Step 7: We need to create Amazon ECR Repositories for both Tiers (Frontend & Backend)
+
+Click on Create repository
+
+<img width="1809" height="732" alt="Image" src="https://github.com/user-attachments/assets/a83ff3b8-30fb-4c6d-b11b-911d0da1d5b3" />
+
+Do the same for the backend repository and click on Save
+
+<img width="1819" height="733" alt="Image" src="https://github.com/user-attachments/assets/6a061936-5a21-4cc3-857e-5a4fa55b878f" />
+
+Now, we have set up our ECR Repository
+
+<img width="1485" height="451" alt="Image" src="https://github.com/user-attachments/assets/6462830c-0ba5-434e-bf5d-46b97d31ef8a" />
+
+
 ### Step 5: Deploy EKS Cluster using Terraform and Jenkins
 
 This step automates the deployment of an Amazon EKS cluster and AWS Load Balancer Controller using Terraform through a Jenkins pipeline. This infrastructure-as-code approach ensures reproducibility, version control, and automated management of your Kubernetes infrastructure.
@@ -554,6 +569,142 @@ kubectl -n mern-tier get secret argocd-initial-admin-secret -o jsonpath="{.data.
 Here is our ArgoCD Dashboard.
 
 <img width="1917" height="573" alt="Image" src="https://github.com/user-attachments/assets/242cbdb4-3c77-4911-89c4-4e0acd49c09f" />
+
+
+### Step 9: Now, we have to configure SonarQube for our DevSecOps Pipeline
+
+To do that, ensure sonarqube docker is running by checkimg it with the command below
+
+```bash
+docker ps
+```
+if the sonar is not running, you can start it by using
+
+```bash
+docker start sonar
+```
+
+Copy your Jenkins Server public IP and paste it into your favourite browser with a 9000 port
+
+```bash
+https//:<jenkinsIP>:9000
+```
+
+The username and password will be admin
+
+Click on Log In.
+
+<img width="960" height="161" alt="Image" src="https://github.com/user-attachments/assets/0926c46d-a8d8-4ed9-9c7b-88e730cdfd50" />
+
+Update the password
+
+<img width="959" height="297" alt="Image" src="https://github.com/user-attachments/assets/ad117b1f-1742-458f-8802-fa572830b6e6" />
+
+Click on **Administration**, then **My Account**, and select **Security**
+
+<img width="1827" height="187" alt="Image" src="https://github.com/user-attachments/assets/74a9ecbf-9ce2-44c4-9c8f-19aedc2ae008" />
+
+Generate token
+
+<img width="1311" height="385" alt="Image" src="https://github.com/user-attachments/assets/9019d6eb-dade-4b49-9b42-3f544bcf65e4" />
+
+Copy the **token**, keep it somewhere safe and click on **Done**.
+
+Now, we have to configure webhooks for quality checks.
+
+Click on **Administration**, then **Configuration**, and select **Webhooks**
+
+Click on **Create**
+
+<img width="969" height="176" alt="Image" src="https://github.com/user-attachments/assets/4cee6c2a-efe4-49fd-bff2-60fdc38eeab8" />
+
+Provide the Jenkins server public IP with port 8080, add sonarqube-webhook in the suffix, and click on Create.
+
+```bash
+http://<jenkins-server-public-ip>:8080/sonarqube-webhook/
+```
+
+<img width="653" height="345" alt="Image" src="https://github.com/user-attachments/assets/70e2c336-9bee-4601-a264-0287319e013e" />
+
+Click on **create**
+
+Now, we have to create a Project for the frontend code.
+
+Click on Manually.
+
+<img width="810" height="352" alt="Image" src="https://github.com/user-attachments/assets/cabec474-4bfa-4ebd-a365-80927e305409" />
+
+Provide the display name to your Project and click on **Setup**
+
+<img width="574" height="627" alt="Image" src="https://github.com/user-attachments/assets/84856626-5ef2-42ed-9c07-762ba5907dc9" />
+
+Click on **Locally**
+
+<img width="671" height="297" alt="Image" src="https://github.com/user-attachments/assets/e3ed9437-65fe-4e78-97b9-d2d327167436" />
+
+Select the Use existing token, paste the token you generated earlier and click on **Continue**.
+
+<img width="906" height="536" alt="Image" src="https://github.com/user-attachments/assets/3f32e9ed-9be5-4b28-8a80-faf79f54a07c" />
+
+Select **Other** and **Linux** as OS.
+
+After performing the above steps, you will get the command, which you can see in the snippet below.
+
+Now, use the command in the Jenkins Frontend Pipeline where Code Quality Analysis will be performed.
+
+<img width="1183" height="695" alt="Image" src="https://github.com/user-attachments/assets/80a8ce43-f7cc-4fbc-afee-2b151cafc912" />
+
+Now, we have to create a Project for the backend code.
+
+Click on **Create Project.**
+
+Follow the same step for the frontend to create the backend. 
+
+
+Now, we have to store the sonar credentials.
+
+Go to **Dashboard** -> **Manage Jenkins** -> **Credentials**
+
+Select the kind as **Secret text**, paste your token in Secret and keep other things as it is.
+
+Click on Create
+
+<img width="902" height="325" alt="Image" src="https://github.com/user-attachments/assets/7cf783be-4679-427f-90f8-2753a64141f6" />
+
+
+Now, according to our Pipeline, we need to add an Account ID (aws account) in the Jenkins credentials because of the ECR repo URI.
+
+Select the kind as Secret text, paste your AWS Account ID in Secret and keep other things as it is.
+
+Click on **Create**
+
+<img width="962" height="350" alt="Image" src="https://github.com/user-attachments/assets/ed1ef612-fa24-4e9c-b54f-bc69ae2a2a87" />
+
+
+Now, we need to provide our ECR image name for the frontend-mern-tier, which is frontend only.
+
+Select the kind as Secret text, paste your frontend repo name in Secret and keep other things as it is.
+
+Click on Create
+
+<img width="1575" height="776" alt="Image" src="https://github.com/user-attachments/assets/50cc81e9-5a47-4bf3-8f8a-90ef6bb0bcc2" />
+
+
+Now, we need to provide our ECR image name for the backend, which is backend only.
+
+Select the kind as **Secret text**, paste your backend repo name in Secret, and keep other things as it is.
+
+Click on **Create**
+
+Follow the same process for the backend also. 
+
+
+
+
+
+
+
+
 
 
 
