@@ -107,18 +107,26 @@ Before starting the project, ensure you have the following prerequisites:
 
 <img width="1707" height="398" alt="Image" src="https://github.com/user-attachments/assets/dd7f1284-c59b-4c6d-9ce7-a38ee459694a" />
 
-Create a new IAM User on AWS and give it AdministratorAccess for testing purposes
-(not recommended for your organisation's Projects)
+Create a new IAM User on AWS and give it AdministratorAccess for testing purposes (not recommended for your organisation's Projects)
 
 - Go to the AWS IAM Service and click on Users.
+
 - Click on Create user
+
 - Provide the name to your user and click on Next.
+
 - Select the Attach policies directly option and search for AdministratorAccess, then select it.
+
 - Click on Next.
+
 - Click on Create user
+
 - Now, select your created user, then click on Security credentials and generate an access key by clicking on Create access key.
+
 - Select the Command Line Interface (CLI), then select the check mark for the confirmation and click on Next.
+
 - Provide the Description and click on the Create access key.
+
 - You will see that you got the credentials, and you can also download the CSV file for the future.
 
 
@@ -241,7 +249,6 @@ systemctl status Jenkins.service
 
 Click on continue
 
-
 Click on Install suggested plugins. The plugins will be installed
 
 <img width="904" height="243" alt="Image" src="https://github.com/user-attachments/assets/b897f3e2-8eaf-4666-8dc4-2ab0c6665470" />
@@ -257,7 +264,7 @@ The Jenkins Dashboard will look like the snippet below
 <img width="1853" height="818" alt="Image" src="https://github.com/user-attachments/assets/87f094ab-7ab3-4653-bd21-837fc2f4f6f8" />
 
 
-### Step 7: We need to create Amazon ECR Repositories for both Tiers (Frontend & Backend)
+### Step 5: We need to create Amazon ECR Repositories for both Tiers (Frontend & Backend)
 
 Click on Create repository
 
@@ -272,17 +279,18 @@ Now, we have set up our ECR Repository
 <img width="1485" height="451" alt="Image" src="https://github.com/user-attachments/assets/6462830c-0ba5-434e-bf5d-46b97d31ef8a" />
 
 
-### Step 5: Deploy EKS Cluster using Terraform and Jenkins
+### Step 6: Deploy EKS Cluster using Terraform and Jenkins
 
 This step automates the deployment of an Amazon EKS cluster and AWS Load Balancer Controller using Terraform through a Jenkins pipeline. This infrastructure-as-code approach ensures reproducibility, version control, and automated management of your Kubernetes infrastructure.
 
-Jenkins Setup
+***Jenkins Setup***
 
 1. Install Required Jenkins Plugins
 
 Go to Manage Jenkins → Plugins → Available plugins and install:
 
 - AWS Credentials plugin
+
 - Pipeline: AWS Steps plugin
 
 2. Configure AWS Credentials in Jenkins
@@ -296,7 +304,9 @@ Select AWS Credentials as Kind
 Enter the following:
 
 - ID: aws-creds
+
 - Access Key ID: Your AWS Access Key
+
 - Secret Access Key: Your AWS Secret Access Key
 
 Click Create
@@ -312,73 +322,75 @@ Select Username with password as Kind
 Enter the following:
 
 - ID: github-creds
+
 - Username: Your GitHub username
+
 - Password: Your GitHub Personal Access Token
 
 Click Create
 
 
-### Terraform EKS Cluster Deployment
+***Terraform EKS Cluster Deployment***
 
-Check the github file
+Check the github file for the EKS terraform file
 
-Repository Structure
-
-bookingWebApp/
-├── EKS-Cluster-TF/
-│   ├── Jenkinsfile
-│   └── terraform/
-│       ├── main.tf
-│       ├── variables.tf
-│       ├── providers.tf
-│       ├── iam.tf
-│       ├── helm.tf
-│       ├── dev.tfvars
-|       ├── dev.tfvars
-│       └── prod.tfvars
-
-### Terraform Configuration
+***Terraform Configuration***
 
 The Terraform code includes:
 
 - EKS Cluster with managed node groups
+
 - IAM Roles and Policies for cluster operations
+
 - AWS Load Balancer Controller setup with Helm
+
 - OIDC Provider for IAM Roles for Service Accounts (IRSA)
+
 - S3 Backend for Terraform state management
 
-### Jenkins Pipeline Execution
+***Jenkins Pipeline Execution***
 
 Access the Jenkins Pipeline:
 
 - Create a new Pipeline job in Jenkins
+
 - Set Definition to "Pipeline script from SCM"
+
 - Configure SCM with your repository URL and credentials
+
 - Set Script Path to EKS-Cluster-TF/Jenkinsfile
 
 Build with Parameters:
 
 - ENVIRONMENT: Select environment (dev, staging, prod)
+
 - TF_ACTION: Choose Terraform action (plan, apply, destroy)
+
 - AUTO_APPROVE: Enable/disable auto-approval for destructive operations
 
 Pipeline Stages:
 
 - Git Checkout: Clones the repository
+
 - Terraform Setup: Initializes Terraform with S3 backend
+
 - Terraform Validate: Validates Terraform configuration
+
 - Terraform Plan: Generates execution plan (for plan/apply actions)
+
 - Terraform Apply: Applies changes (if TF_ACTION=apply)
+
 - Terraform Destroy: Destroys infrastructure (if TF_ACTION=destroy, with approval)
 
 
-Create a Bastian Host
+***Create a Bastian Host***
 
 The ec2 userdata for the bastian host
 
 installing all the necessary tools in bastian host user data
 
 ```bash
+
 #!/bin/bash
 
 apt-get update -y
@@ -405,36 +417,41 @@ sudo mv /tmp/eksctl /usr/local/bin
 eksctl version
 ```
 
-Allow bastian host traffic from the eks control sec group
+- Allow bastian host traffic from the eks control sec group
 
-Add the bastion role to EKS aws-auth
+- Add the bastion role to EKS aws-auth
 
 ```bash
+
 eksctl create iamidentitymapping \
   --cluster bookingwebapp-eks \
   --arn arn:aws:iam::123456789:role/jumper-role \
   --username bastion-user \
   --group system:masters
+
 ```
 
-Update Kubeconfig: Configures kubectl to access the new cluster
+- Update Kubeconfig: Configures kubectl to access the new cluster
 
 Verification
 
-Check Cluster Status
+- Check Cluster Status
 
 ```bash
+
 # Verify EKS cluster creation
 aws eks describe-cluster --name bookingwebapp-eks --region us-east-1
 
 # Update kubeconfig and check nodes
 aws eks update-kubeconfig --region us-east-1 --name bookingwebapp-eks
 kubectl get nodes
+
 ```
 
 Verify Load Balancer Controller
 
 ```bash
+
 # Check Load Balancer Controller deployment
 kubectl get deployment -n kube-system aws-load-balancer-controller
 
@@ -445,59 +462,72 @@ kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-cont
 kubectl logs -n kube-system deployment/aws-load-balancer-controller -f
 ```
 
-### Benefits of Terraform Approach
+***Benefits of Terraform Approach***
 
 ✅ Infrastructure as Code
 
 - Version-controlled infrastructure changes
+
 - Repeatable and consistent deployments
+
 - Complete audit trail of all modifications
 
 ✅ Automated Management
 
 - No manual CLI commands required
+
 - Automated dependency management
+
 - Integrated security best practices
 
 ✅ Environment Consistency
 
 - identical configurations across dev, staging, prod
+
 - Parameterized deployments for different environments
+
 - Reduced human error
 
 ✅ Cost Optimization
 
 - Automated resource cleanup with destroy operations
+
 - Efficient resource provisioning
+
 - Tagging and resource management
 
-### Troubleshooting
+***Troubleshooting***
 
 Common Issues and Solutions
 
 - IAM Permission Errors:
 
   - Verify AWS credentials have sufficient permissions
+
   - Check IAM policies attached to Jenkins credentials
 
 - Terraform State Locking:
 
   - Ensure DynamoDB table exists for state locking (if configured)
+
   - Check S3 bucket permissions
 
 - Load Balancer Controller Issues:
 
   - Verify OIDC provider is properly configured
+
   - Check IAM role annotations on service account
+
   - Validate network connectivity between pods and AWS API
 
 - Node Group Failures:
 
   - Check EC2 instance limits in AWS account
+
   - Verify subnet configurations and IP availability
 
 
-### Step 6: Install & Configure ArgoCD
+### Step 7: Install & Configure ArgoCD
 
 We will be deploying our application on a mern-tier namespace.
 
@@ -506,7 +536,9 @@ To do that, we will create a mern-tier namespace on EKS
 ```bash
 kubectl create namespace mern-tier
 ```
+
 <img width="707" height="45" alt="Image" src="https://github.com/user-attachments/assets/ffdc6662-a141-4a5e-8172-95e769e2d1dc" />
+
 
 ```bash
 kubectl apply -n mern-rier -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml
@@ -517,9 +549,11 @@ All pods must be running. To validate, run the command below
 ```bash
 kubectl get pods -n mern-tier
 ```
+
 ```bash
  kubectl get svc -n mern-tier
 ```
+
 <img width="1306" height="377" alt="Image" src="https://github.com/user-attachments/assets/f616efb4-c66a-446f-88fa-4c554bdc6952" />
 
 Now, expose the argoCD server as a LoadBalancer by editing the argo-server using kubernetes manifest 
@@ -527,6 +561,7 @@ Now, expose the argoCD server as a LoadBalancer by editing the argo-server using
 ```bash
  kubectl edit svc argocd-server -n mern-tier
 ```
+
 <img width="1897" height="988" alt="Image" src="https://github.com/user-attachments/assets/cb2a602a-7e87-44a7-b260-880b15a94a4a" />
 
 Edit the ClassicIp to LoadBalancer
@@ -571,7 +606,7 @@ Here is our ArgoCD Dashboard.
 <img width="1917" height="573" alt="Image" src="https://github.com/user-attachments/assets/242cbdb4-3c77-4911-89c4-4e0acd49c09f" />
 
 
-### Step 9: Now, we have to configure SonarQube for our DevSecOps Pipeline
+### Step 8: Now, we have to configure SonarQube for our DevSecOps Pipeline
 
 To do that, ensure sonarqube docker is running by checkimg it with the command below
 
