@@ -9,6 +9,8 @@ module "eks" {
   subnet_ids                     = module.vpc.private_subnets
   cluster_endpoint_public_access = true
 
+  enable_irsa = true
+
   create_iam_role = true
   iam_role_name   = "${local.cluster_name}-cluster-role"
 
@@ -73,11 +75,6 @@ module "eks" {
     }
 }
 
-resource "aws_iam_openid_connect_provider" "eks" {
-  
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
-  url             = module.eks.cluster_oidc_issuer_url # module.eks.cluster_oidc_issuer_ur
-}
+
 
 
