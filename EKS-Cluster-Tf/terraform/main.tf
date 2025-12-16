@@ -45,7 +45,7 @@ provider "helm" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  cluster_name = var.eks_clusterName
+  cluster_name = var.eks_cluster_name
 }
 
 # OIDC Provider

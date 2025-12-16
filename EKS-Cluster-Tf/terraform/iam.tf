@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy"
     }
 
     principals {
-      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+      identifiers = [module.eks.oidc_provider_arn]
       type        = "Federated"
     }
   }

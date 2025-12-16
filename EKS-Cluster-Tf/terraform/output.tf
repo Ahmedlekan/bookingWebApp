@@ -18,11 +18,6 @@ output "load_balancer_controller_role_arn" {
   value       = aws_iam_role.aws_load_balancer_controller.arn
 }
 
-output "oidc_provider_arn" {
-  description = "ARN of the OIDC provider"
-  value       = aws_iam_openid_connect_provider.eks.arn
-}
-
 output "cluster_oidc_issuer_url" {
   description = "The OIDC issuer URL for the cluster"
   value       = module.eks.cluster_oidc_issuer_url
@@ -32,3 +27,9 @@ output "cluster_security_group_id" {
   description = "Security group ID attached to the EKS cluster"
   value       = module.eks.cluster_security_group_id
 }
+
+output "oidc_provider_arn" {
+  description = "The ARN of the OIDC provider for IRSA"
+  value       = module.eks.oidc_provider_arn
+}
+

@@ -38,6 +38,8 @@ DS_Store
 *.tfstate
 *.tfstate.*
 
+terraformbackup
+
 # Crash log files
 crash.log
 crash.*.log

@@ -9,7 +9,7 @@ resource "kubernetes_service_account" "service_account" {
   }
 }
 
-# Helm Release (corrected)
+# Helm Release
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
@@ -19,7 +19,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "clusterName"
-    value = local.cluster_name
+    value = var.eks_cluster_name
   }
 
   set {
@@ -55,6 +55,8 @@ resource "helm_release" "aws_load_balancer_controller" {
   depends_on = [
     aws_iam_role_policy_attachment.aws_load_balancer_controller_attach,
     kubernetes_service_account.service_account,
-    aws_iam_openid_connect_provider.eks
+    module.eks
   ]
 }
+
+
