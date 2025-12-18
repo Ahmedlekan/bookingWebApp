@@ -107,18 +107,26 @@ Before starting the project, ensure you have the following prerequisites:
 
 <img width="1707" height="398" alt="Image" src="https://github.com/user-attachments/assets/dd7f1284-c59b-4c6d-9ce7-a38ee459694a" />
 
-Create a new IAM User on AWS and give it AdministratorAccess for testing purposes
-(not recommended for your organisation's Projects)
+Create a new IAM User on AWS and give it AdministratorAccess for testing purposes (not recommended for your organisation's Projects)
 
 - Go to the AWS IAM Service and click on Users.
+
 - Click on Create user
+
 - Provide the name to your user and click on Next.
+
 - Select the Attach policies directly option and search for AdministratorAccess, then select it.
+
 - Click on Next.
+
 - Click on Create user
+
 - Now, select your created user, then click on Security credentials and generate an access key by clicking on Create access key.
+
 - Select the Command Line Interface (CLI), then select the check mark for the confirmation and click on Next.
+
 - Provide the Description and click on the Create access key.
+
 - You will see that you got the credentials, and you can also download the CSV file for the future.
 
 
@@ -209,8 +217,8 @@ Copy the SSH command and paste it on your local machine.
 <img width="1662" height="647" alt="Image" src="https://github.com/user-attachments/assets/14577cea-ea2b-472b-a245-1070b8c19c02" />
 
 
-
 ### Step 4: Configure the Jenkins
+
 Now, we logged into our Jenkins server.
 
 We have installed some services such as Jenkins, Docker, Sonarqube, Terraform, Kubectl, AWS CLI, and Trivy
@@ -241,7 +249,6 @@ systemctl status Jenkins.service
 
 Click on continue
 
-
 Click on Install suggested plugins. The plugins will be installed
 
 <img width="904" height="243" alt="Image" src="https://github.com/user-attachments/assets/b897f3e2-8eaf-4666-8dc4-2ab0c6665470" />
@@ -257,17 +264,33 @@ The Jenkins Dashboard will look like the snippet below
 <img width="1853" height="818" alt="Image" src="https://github.com/user-attachments/assets/87f094ab-7ab3-4653-bd21-837fc2f4f6f8" />
 
 
-### Step 5: Deploy EKS Cluster using Terraform and Jenkins
+### Step 5: We need to create Amazon ECR Repositories for both Tiers (Frontend & Backend)
+
+Click on Create repository
+
+<img width="1809" height="732" alt="Image" src="https://github.com/user-attachments/assets/a83ff3b8-30fb-4c6d-b11b-911d0da1d5b3" />
+
+Do the same for the backend repository and click on Save
+
+<img width="1819" height="733" alt="Image" src="https://github.com/user-attachments/assets/6a061936-5a21-4cc3-857e-5a4fa55b878f" />
+
+Now, we have set up our ECR Repository
+
+<img width="1485" height="451" alt="Image" src="https://github.com/user-attachments/assets/6462830c-0ba5-434e-bf5d-46b97d31ef8a" />
+
+
+### Step 6: Deploy EKS Cluster using Terraform and Jenkins
 
 This step automates the deployment of an Amazon EKS cluster and AWS Load Balancer Controller using Terraform through a Jenkins pipeline. This infrastructure-as-code approach ensures reproducibility, version control, and automated management of your Kubernetes infrastructure.
 
-Jenkins Setup
+***Jenkins Setup***
 
 1. Install Required Jenkins Plugins
 
 Go to Manage Jenkins → Plugins → Available plugins and install:
 
 - AWS Credentials plugin
+
 - Pipeline: AWS Steps plugin
 
 2. Configure AWS Credentials in Jenkins
@@ -281,7 +304,9 @@ Select AWS Credentials as Kind
 Enter the following:
 
 - ID: aws-creds
+
 - Access Key ID: Your AWS Access Key
+
 - Secret Access Key: Your AWS Secret Access Key
 
 Click Create
@@ -297,83 +322,136 @@ Select Username with password as Kind
 Enter the following:
 
 - ID: github-creds
+
 - Username: Your GitHub username
+
 - Password: Your GitHub Personal Access Token
 
 Click Create
 
 
-### Terraform EKS Cluster Deployment
+***Terraform EKS Cluster Deployment***
 
-Check the github file
+Check the github file for the EKS terraform file
 
-Repository Structure
-
-bookingWebApp/
-├── EKS-Cluster-TF/
-│   ├── Jenkinsfile
-│   └── terraform/
-│       ├── main.tf
-│       ├── variables.tf
-│       ├── providers.tf
-│       ├── iam.tf
-│       ├── helm.tf
-│       ├── dev.tfvars
-|       ├── dev.tfvars
-│       └── prod.tfvars
-
-### Terraform Configuration
+***Terraform Configuration***
 
 The Terraform code includes:
 
 - EKS Cluster with managed node groups
+
 - IAM Roles and Policies for cluster operations
+
 - AWS Load Balancer Controller setup with Helm
+
 - OIDC Provider for IAM Roles for Service Accounts (IRSA)
+
 - S3 Backend for Terraform state management
 
-### Jenkins Pipeline Execution
+***Jenkins Pipeline Execution***
 
 Access the Jenkins Pipeline:
 
 - Create a new Pipeline job in Jenkins
+
 - Set Definition to "Pipeline script from SCM"
+
 - Configure SCM with your repository URL and credentials
+
 - Set Script Path to EKS-Cluster-TF/Jenkinsfile
 
 Build with Parameters:
 
 - ENVIRONMENT: Select environment (dev, staging, prod)
+
 - TF_ACTION: Choose Terraform action (plan, apply, destroy)
+
 - AUTO_APPROVE: Enable/disable auto-approval for destructive operations
 
 Pipeline Stages:
 
 - Git Checkout: Clones the repository
+
 - Terraform Setup: Initializes Terraform with S3 backend
+
 - Terraform Validate: Validates Terraform configuration
+
 - Terraform Plan: Generates execution plan (for plan/apply actions)
+
 - Terraform Apply: Applies changes (if TF_ACTION=apply)
+
 - Terraform Destroy: Destroys infrastructure (if TF_ACTION=destroy, with approval)
 
-Update Kubeconfig: Configures kubectl to access the new cluster
+
+***Create a Bastian Host***
+
+The ec2 userdata for the bastian host
+
+installing all the necessary tools in bastian host user data
+
+```bash
+
+#!/bin/bash
+
+apt-get update -y
+
+snap install amazon-ssm-agent --classic
+systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service
+systemctl start snap.amazon-ssm-agent.amazon-ssm-agent.service
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install -y unzip
+unzip awscliv2.zip
+sudo ./aws/install
+rm -rf awscliv2.zip aws/
+
+sudo snap install helm --classic
+
+curl -LO "https://dl.k8s.io/release/v1.28.4/bin/linux/amd64/kubectl"
+sudo chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+kubectl version --client
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+```
+
+- Allow bastian host traffic from the eks control sec group
+
+- Add the bastion role to EKS aws-auth
+
+```bash
+
+eksctl create iamidentitymapping \
+  --cluster bookingwebapp-eks \
+  --arn arn:aws:iam::123456789:role/jumper-role \
+  --username bastion-user \
+  --group system:masters
+
+```
+
+- Update Kubeconfig: Configures kubectl to access the new cluster
 
 Verification
 
-Check Cluster Status
+- Check Cluster Status
 
 ```bash
+
 # Verify EKS cluster creation
 aws eks describe-cluster --name bookingwebapp-eks --region us-east-1
 
 # Update kubeconfig and check nodes
 aws eks update-kubeconfig --region us-east-1 --name bookingwebapp-eks
 kubectl get nodes
+
 ```
 
 Verify Load Balancer Controller
 
 ```bash
+
 # Check Load Balancer Controller deployment
 kubectl get deployment -n kube-system aws-load-balancer-controller
 
@@ -384,56 +462,287 @@ kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-cont
 kubectl logs -n kube-system deployment/aws-load-balancer-controller -f
 ```
 
-### Benefits of Terraform Approach
+***Benefits of Terraform Approach***
 
 ✅ Infrastructure as Code
 
 - Version-controlled infrastructure changes
+
 - Repeatable and consistent deployments
+
 - Complete audit trail of all modifications
 
 ✅ Automated Management
 
 - No manual CLI commands required
+
 - Automated dependency management
+
 - Integrated security best practices
 
 ✅ Environment Consistency
 
 - identical configurations across dev, staging, prod
+
 - Parameterized deployments for different environments
+
 - Reduced human error
 
 ✅ Cost Optimization
 
 - Automated resource cleanup with destroy operations
+
 - Efficient resource provisioning
+
 - Tagging and resource management
 
-### Troubleshooting
+***Troubleshooting***
 
 Common Issues and Solutions
 
 - IAM Permission Errors:
 
   - Verify AWS credentials have sufficient permissions
+
   - Check IAM policies attached to Jenkins credentials
 
 - Terraform State Locking:
 
   - Ensure DynamoDB table exists for state locking (if configured)
+
   - Check S3 bucket permissions
 
 - Load Balancer Controller Issues:
 
   - Verify OIDC provider is properly configured
+
   - Check IAM role annotations on service account
+
   - Validate network connectivity between pods and AWS API
 
 - Node Group Failures:
 
   - Check EC2 instance limits in AWS account
+
   - Verify subnet configurations and IP availability
+
+
+### Step 7: Install & Configure ArgoCD
+
+We will be deploying our application on a mern-tier namespace.
+
+To do that, we will create a mern-tier namespace on EKS
+
+```bash
+kubectl create namespace mern-tier
+```
+
+<img width="707" height="45" alt="Image" src="https://github.com/user-attachments/assets/ffdc6662-a141-4a5e-8172-95e769e2d1dc" />
+
+
+```bash
+kubectl apply -n mern-rier -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.7/manifests/install.yaml
+```
+
+All pods must be running. To validate, run the command below
+
+```bash
+kubectl get pods -n mern-tier
+```
+
+```bash
+ kubectl get svc -n mern-tier
+```
+
+<img width="1306" height="377" alt="Image" src="https://github.com/user-attachments/assets/f616efb4-c66a-446f-88fa-4c554bdc6952" />
+
+Now, expose the argoCD server as a LoadBalancer by editing the argo-server using kubernetes manifest 
+
+```bash
+ kubectl edit svc argocd-server -n mern-tier
+```
+
+<img width="1897" height="988" alt="Image" src="https://github.com/user-attachments/assets/cb2a602a-7e87-44a7-b260-880b15a94a4a" />
+
+Edit the ClassicIp to LoadBalancer
+
+<img width="1917" height="1000" alt="Image" src="https://github.com/user-attachments/assets/275db254-8f0f-4121-a49c-035776e8d9c3" />
+
+Or you run the command below
+
+```bash
+kubectl patch svc argocd-server -n mern-tier -p '{"spec": {"type": "LoadBalancer"}}'
+```
+
+You can validate whether the Load Balancer is created or not by going to the AWS ec2 loadbalancer Console
+
+<img width="1914" height="605" alt="Image" src="https://github.com/user-attachments/assets/b79b44f5-c4df-4b73-9521-0e52d177b879" />
+
+To access the argoCD, copy the LoadBalancer DNS and hit it on your favourite browser.
+
+You will get a warning like the snippet below.
+
+Click on Advanced.
+
+<img width="873" height="230" alt="Image" src="https://github.com/user-attachments/assets/791eceb1-9b8e-4d12-a66c-00206e32344b" />
+
+
+Click on the link below, which is appearing under Hide advanced
+
+<img width="748" height="321" alt="Image" src="https://github.com/user-attachments/assets/96da920b-7fca-457b-a9ef-d49dd3d92ed2" />
+
+The username for the agrocd is "admin"
+
+Now, we need to get the password for our argoCD server to perform the deployment.
+
+The password is stored in a Kubernetes secret
+
+```bash
+kubectl -n mern-tier get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
+```
+
+Here is our ArgoCD Dashboard.
+
+<img width="1917" height="573" alt="Image" src="https://github.com/user-attachments/assets/242cbdb4-3c77-4911-89c4-4e0acd49c09f" />
+
+
+### Step 8: Now, we have to configure SonarQube for our DevSecOps Pipeline
+
+To do that, ensure sonarqube docker is running by checkimg it with the command below
+
+```bash
+docker ps
+```
+if the sonar is not running, you can start it by using
+
+```bash
+docker start sonar
+```
+
+Copy your Jenkins Server public IP and paste it into your favourite browser with a 9000 port
+
+```bash
+https//:<jenkinsIP>:9000
+```
+
+The username and password will be admin
+
+Click on Log In.
+
+<img width="960" height="161" alt="Image" src="https://github.com/user-attachments/assets/0926c46d-a8d8-4ed9-9c7b-88e730cdfd50" />
+
+Update the password
+
+<img width="959" height="297" alt="Image" src="https://github.com/user-attachments/assets/ad117b1f-1742-458f-8802-fa572830b6e6" />
+
+Click on **Administration**, then **My Account**, and select **Security**
+
+<img width="1827" height="187" alt="Image" src="https://github.com/user-attachments/assets/74a9ecbf-9ce2-44c4-9c8f-19aedc2ae008" />
+
+Generate token
+
+<img width="1311" height="385" alt="Image" src="https://github.com/user-attachments/assets/9019d6eb-dade-4b49-9b42-3f544bcf65e4" />
+
+Copy the **token**, keep it somewhere safe and click on **Done**.
+
+Now, we have to configure webhooks for quality checks.
+
+Click on **Administration**, then **Configuration**, and select **Webhooks**
+
+Click on **Create**
+
+<img width="969" height="176" alt="Image" src="https://github.com/user-attachments/assets/4cee6c2a-efe4-49fd-bff2-60fdc38eeab8" />
+
+Provide the Jenkins server public IP with port 8080, add sonarqube-webhook in the suffix, and click on Create.
+
+```bash
+http://<jenkins-server-public-ip>:8080/sonarqube-webhook/
+```
+
+<img width="653" height="345" alt="Image" src="https://github.com/user-attachments/assets/70e2c336-9bee-4601-a264-0287319e013e" />
+
+Click on **create**
+
+Now, we have to create a Project for the frontend code.
+
+Click on Manually.
+
+<img width="810" height="352" alt="Image" src="https://github.com/user-attachments/assets/cabec474-4bfa-4ebd-a365-80927e305409" />
+
+Provide the display name to your Project and click on **Setup**
+
+<img width="574" height="627" alt="Image" src="https://github.com/user-attachments/assets/84856626-5ef2-42ed-9c07-762ba5907dc9" />
+
+Click on **Locally**
+
+<img width="671" height="297" alt="Image" src="https://github.com/user-attachments/assets/e3ed9437-65fe-4e78-97b9-d2d327167436" />
+
+Select the Use existing token, paste the token you generated earlier and click on **Continue**.
+
+<img width="906" height="536" alt="Image" src="https://github.com/user-attachments/assets/3f32e9ed-9be5-4b28-8a80-faf79f54a07c" />
+
+Select **Other** and **Linux** as OS.
+
+After performing the above steps, you will get the command, which you can see in the snippet below.
+
+Now, use the command in the Jenkins Frontend Pipeline where Code Quality Analysis will be performed.
+
+<img width="1183" height="695" alt="Image" src="https://github.com/user-attachments/assets/80a8ce43-f7cc-4fbc-afee-2b151cafc912" />
+
+Now, we have to create a Project for the backend code.
+
+Click on **Create Project.**
+
+Follow the same step for the frontend to create the backend. 
+
+
+Now, we have to store the sonar credentials.
+
+Go to **Dashboard** -> **Manage Jenkins** -> **Credentials**
+
+Select the kind as **Secret text**, paste your token in Secret and keep other things as it is.
+
+Click on Create
+
+<img width="902" height="325" alt="Image" src="https://github.com/user-attachments/assets/7cf783be-4679-427f-90f8-2753a64141f6" />
+
+
+Now, according to our Pipeline, we need to add an Account ID (aws account) in the Jenkins credentials because of the ECR repo URI.
+
+Select the kind as Secret text, paste your AWS Account ID in Secret and keep other things as it is.
+
+Click on **Create**
+
+<img width="962" height="350" alt="Image" src="https://github.com/user-attachments/assets/ed1ef612-fa24-4e9c-b54f-bc69ae2a2a87" />
+
+
+Now, we need to provide our ECR image name for the frontend-mern-tier, which is frontend only.
+
+Select the kind as Secret text, paste your frontend repo name in Secret and keep other things as it is.
+
+Click on Create
+
+<img width="1575" height="776" alt="Image" src="https://github.com/user-attachments/assets/50cc81e9-5a47-4bf3-8f8a-90ef6bb0bcc2" />
+
+
+Now, we need to provide our ECR image name for the backend, which is backend only.
+
+Select the kind as **Secret text**, paste your backend repo name in Secret, and keep other things as it is.
+
+Click on **Create**
+
+Follow the same process for the backend also. 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
