@@ -11,7 +11,7 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.13.0"
+      version = "~> 2.14"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -20,9 +20,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "bookingwebapp120011"
-    key    = "terraform.tfstate"
-    region = "us-east-1"
+    bucket         = "bookingwebapp120011"
+    region         = "us-east-1"
+    use_lockfile = true
+    encrypt        = true
   }
 
   required_version = "~> 1.13.2"

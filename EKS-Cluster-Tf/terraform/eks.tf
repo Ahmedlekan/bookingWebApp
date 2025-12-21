@@ -4,7 +4,7 @@ module "eks" {
 
   # Using variables directly
   name               = var.eks_cluster_name
-  kubernetes_version = "1.30"
+  kubernetes_version = "1.32"
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -33,7 +33,7 @@ module "eks" {
       name           = "node-group-1"
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["t3.small"]
-      disk_size      = 20
+      disk_size      = 50
       disk_encrypted = true
 
       min_size     = 1
@@ -53,7 +53,7 @@ module "eks" {
       name           = "node-group-2"
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["t3.small"]
-      disk_size      = 20
+      disk_size      = 50
       disk_encrypted = true
 
       min_size     = 1
@@ -69,15 +69,11 @@ module "eks" {
       }
     }
 
-    tags = {
-      Terraform = "true"
-      Project   = "bookingwebapp"
-    }
   }
 
 
   tags = {
-    Environment = "production"
+    Environment = var.environment
     Terraform   = "true"
     Project     = "bookingwebapp"
   }

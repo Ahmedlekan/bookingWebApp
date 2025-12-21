@@ -63,7 +63,7 @@ pipeline {
         stage('Init') {
             steps {
                 withAWS(credentials: 'aws-creds', region: 'us-east-1') {
-                    sh 'terraform -chdir=EKS-Cluster-Tf/terraform/ init'
+                    sh 'terraform -chdir=EKS-Cluster-Tf/terraform/ init -reconfigure -backend-config=backend-${params.ENVIRONMENT}.hcl -input=false'
                 }
             }
         }

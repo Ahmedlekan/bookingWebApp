@@ -33,3 +33,8 @@ variable "public_subnets" {
   type        = list(string)
   default     = ["172.20.4.0/24", "172.20.5.0/24", "172.20.6.0/24"]
 }
+
+variable "environment" {
+  description = "Deployment environment (dev, staging, prod)"
+  type        = string
+}
