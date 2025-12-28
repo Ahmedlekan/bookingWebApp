@@ -734,6 +734,21 @@ Click on **Create**
 Follow the same process for the backend also. 
 
 
+***Add GitHub credentials***
+
+Select the kind as **Secret text** and paste your GitHub Personal access token(not password) in Secret, and keep other things as it is.
+
+Click on Create
+
+**Note**: If you haven’t generated your token, you generate it first, then paste it into the Jenkins
+
+<img width="1587" height="728" alt="Image" src="https://github.com/user-attachments/assets/aa27bd26-9690-4fbd-b5c2-0048a3110a47" />
+
+Final Snippet of all Credentials that we needed to implement this project.
+
+<img width="1709" height="791" alt="Image" src="https://github.com/user-attachments/assets/02a560c1-8f0b-491a-9d84-f45b3a5b3c48" />
+
+
 
 
 
