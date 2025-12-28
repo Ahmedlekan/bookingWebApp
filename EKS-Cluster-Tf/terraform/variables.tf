@@ -38,3 +38,9 @@ variable "environment" {
   description = "Deployment environment (dev, staging, prod)"
   type        = string
 }
+
+variable "tags" {
+  description = "A map of tags to apply to all resources"
+  type        = map(string)
+  default     = {}
+}

@@ -6,8 +6,15 @@ module "vpc" {
   cidr = var.vpc_cidr
   azs  = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  private_subnets = var.private_subnets
-  public_subnets  = var.public_subnets
+  private_subnets    = var.private_subnets
+  public_subnets     = var.public_subnets
+  enable_dns_support = true
+
+  # VPC Flow Logs for security monitoring
+  enable_flow_log                      = true
+  create_flow_log_cloudwatch_log_group = true
+  create_flow_log_cloudwatch_iam_role  = true
+  flow_log_max_aggregation_interval    = 60
 
   enable_nat_gateway   = true
   single_nat_gateway   = true

@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.0"
+      version = ">= 4.33.0, < 6.0.0"
     }
 
     kubernetes = {
@@ -20,10 +20,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "bookingwebapp120011"
-    region         = "us-east-1"
+    bucket       = "bookingwebapp120011"
+    region       = "us-east-1"
     use_lockfile = true
-    encrypt        = true
+    encrypt      = true
   }
 
   required_version = "~> 1.13.2"
