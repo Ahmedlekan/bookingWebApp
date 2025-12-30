@@ -8,7 +8,7 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  cluster_endpoint_public_access  = true
+  cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true
 
   enable_irsa = true
@@ -26,6 +26,30 @@ module "eks" {
         }
       }
     }
+
+    bastion-role = {
+      principal_arn = "arn:aws:iam::314146307160:role/bastion-ssm-role"
+
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    }
+  }
+
+  cluster_security_group_additional_rules = {
+    access_for_bastion_hosts = {
+      description              = "Allow all HTTPS traffic from Bastion host"
+      from_port                = 443
+      to_port                  = 443
+      protocol                 = "tcp"
+      type                     = "ingress"
+      source_security_group_id = aws_security_group.allow_user_bastion.id
+    }
   }
 
   cluster_addons = {
@@ -36,6 +60,9 @@ module "eks" {
       most_recent = true
     }
     vpc-cni = {
+      most_recent = true
+    }
+    aws-ebs-csi-driver = {
       most_recent = true
     }
   }

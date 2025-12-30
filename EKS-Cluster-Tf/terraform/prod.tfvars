@@ -10,3 +10,10 @@ tags = {
   Project     = "bookingwebapp"
   Terraform   = "true"
 }
+
+tags_bastian = {
+  Environment = "dev"
+  Terraform   = "true"
+  Project     = "bookingwebapp"
+  Component   = "bastion"
+}

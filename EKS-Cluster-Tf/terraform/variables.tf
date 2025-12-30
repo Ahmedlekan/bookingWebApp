@@ -44,3 +44,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "bastion_instance_type" {
+  description = "Bastion EC2 instance type"
+  type        = string
+  default     = "t3.medium"
+}
+
+variable "tags_bastian" {
+  description = "Common tags"
+  type        = map(string)
+  default     = {}
+}
