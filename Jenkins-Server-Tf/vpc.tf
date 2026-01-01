@@ -11,8 +11,8 @@ module "vpc" {
   private_subnets = []
   public_subnets  = ["172.20.4.0/24"]
 
-  enable_nat_gateway = false
-  enable_dns_support = true
+  enable_nat_gateway      = false
+  enable_dns_support      = true
   map_public_ip_on_launch = true
 
   tags = {
