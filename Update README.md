@@ -329,6 +329,15 @@ Enter the following:
 
 Click Create
 
+***Configure terreform for jenkins***
+
+- Install terraform plugin
+
+- Go to Manage Jenkins → Tools
+
+- On your machine, type ```whereis terraform``` you are going to get directory where terraform in stored, copy it and paste it in your jenkins ```/usr/bin/terraform```
+
+<img width="1514" height="558" alt="Image" src="https://github.com/user-attachments/assets/25d08fcd-fb98-42e3-8b1d-3cae5f63ae06" />
 
 ***Terraform EKS Cluster Deployment***
 
