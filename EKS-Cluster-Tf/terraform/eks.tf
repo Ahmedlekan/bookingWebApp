@@ -49,7 +49,6 @@ module "eks" {
       protocol                 = "tcp"
       type                     = "ingress"
       source_security_group_id = aws_security_group.allow_user_bastion.id
-      depends_on               = [aws_iam_role_policy_attachment.ebs_csi]
     }
   }
 
@@ -64,10 +63,9 @@ module "eks" {
       most_recent = true
     }
     
-    aws-ebs-csi-driver = {
-      most_recent = true
-      service_account_role_arn = aws_iam_role.ebs_csi.arn
-    }
+    # aws-ebs-csi-driver = {
+    #   most_recent = true
+    # }
   }
 
   # EKS Managed Node Group(s) - v20 SYNTAX
@@ -116,30 +114,8 @@ module "eks" {
 }
 
 
-resource "aws_iam_role" "ebs_csi" {
-  name = "AmazonEBSCSIDriverRole"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Federated = module.eks.oidc_provider_arn
-      }
-      Action = "sts:AssumeRoleWithWebIdentity"
-      Condition = {
-        StringEquals = {
-          "${replace(module.eks.oidc_issuer_url, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
-        }
-      }
-    }]
-  })
-}
 
-resource "aws_iam_role_policy_attachment" "ebs_csi" {
-  role       = aws_iam_role.ebs_csi.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-}
 
 
 
