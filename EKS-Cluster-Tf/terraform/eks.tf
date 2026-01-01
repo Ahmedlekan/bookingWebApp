@@ -73,14 +73,14 @@ module "eks" {
     disk_size                             = 35
     disk_encrypted                        = true
     disk_type                             = "gp3"
-    instance_types                        = ["t3.large"]
+    instance_types                        = ["t3.medium"]
     attach_cluster_primary_security_group = true
   }
 
   eks_managed_node_groups = {
     web = {
       name           = "node-group-1"
-      instance_types = ["t3.large"]
+      instance_types = ["t3.medium"]
 
       min_size      = 2
       max_size      = 3
