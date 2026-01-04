@@ -24,15 +24,28 @@ pipeline {
                 git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/Ahmedlekan/bookingWebApp.git'
             }
         }
+        
+        stage('Install Dependencies') {
+            steps {
+                dir('Application-Code/frontend') {
+                    sh 'npm ci || npm install'
+                }
+            }
+        }
+
         stage('Sonarqube Analysis') {
             steps {
                 dir('Application-Code/frontend') {
                     withSonarQubeEnv('sonar-server') {
-                        sh ''' 
+                        sh '''
+                        echo "Running SonarQube from: $(pwd)"
+                        echo "Source directory:"
+                        ls -la src/
+                        
                         $SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.projectName=frontend-mern \
                         -Dsonar.projectKey=frontend-mern \
-                        -Dsonar.sources=src \
+                        -Dsonar.sources=src/ \
                         -Dsonar.exclusions=node_modules/**,dist/** \
                         -Dsonar.sourceEncoding=UTF-8 \
                         -Dsonar.login=${SONAR_TOKEN}
