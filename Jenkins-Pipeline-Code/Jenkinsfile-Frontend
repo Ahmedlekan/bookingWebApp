@@ -29,15 +29,13 @@ pipeline {
                 dir('Application-Code/frontend') {
                     withSonarQubeEnv('sonar-server') {
                         sh ''' 
-                        
                         $SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.projectName=frontend-mern \
-                        -Dsonar.projectKey=frontend-mern
+                        -Dsonar.projectKey=frontend-mern \
                         -Dsonar.sources=src \
                         -Dsonar.exclusions=node_modules/**,dist/** \
                         -Dsonar.sourceEncoding=UTF-8 \
                         -Dsonar.login=${SONAR_TOKEN}
-
                         '''
                     }
                 }
