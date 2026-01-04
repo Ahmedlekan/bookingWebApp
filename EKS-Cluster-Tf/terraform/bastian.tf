@@ -70,8 +70,7 @@ resource "aws_iam_role_policy_attachment" "bastion_policies" {
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
     "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
-    "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
-    "arn:aws:iam::aws:policy/AmazonEKSReadOnlyAccess"
+    "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
   ])
 
   role       = aws_iam_role.bastion.name

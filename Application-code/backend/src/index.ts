@@ -48,7 +48,11 @@ app.use("/api/auth", authRoutes)
 app.use("/api/my-hotels", myHotelsRoutes)
 // list all my hotels from data base endpoint setup
 app.use("/api/hotels", hotelRoutes)
-app.use("/api/my-bookings", bookingRoutes)  
+app.use("/api/my-bookings", bookingRoutes)
+
+app.get('/healthz', (req: Request, res: Response) => res.sendStatus(200));
+app.get('/ready', (req: Request, res: Response) => res.sendStatus(200));
+app.get('/started', (req: Request, res: Response) => res.sendStatus(200));
 
 
 app.get("*", (req: Request, res: Response) => {

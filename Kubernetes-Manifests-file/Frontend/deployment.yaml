@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: mern-tier
+  labels:
+    role: frontend-tier
+    env: demo
+spec: 
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  selector:
+    matchLabels: 
+      role: frontend-tier
+  template:
+    metadata:
+      labels:
+        role: frontend-tier
+    spec: 
+      imagePullSecrets:
+      - name: ecr-registry-secret
+      containers:
+      - name: frontend-mern-tier
+        image: 314146307160.dkr.ecr.us-east-1.amazonaws.com/frontend-mern-tier:1
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: frontend-config
+        ports:
+        - containerPort: 3000
+ 
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "300m"
+            memory: "256Mi"
+        
+        readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+        livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
