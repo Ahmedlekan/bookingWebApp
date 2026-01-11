@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: three-tier
+  name: mongodb
+  labels:
+    app: mongodb
+    tier: database
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+        tier: database
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:5.0
+        imagePullPolicy: IfNotPresent
+        args:
+          - "--bind_ip_all"
+          - "--auth"
+          - "--storageEngine"
+          - "wiredTiger"
+        ports:
+        - containerPort: 27017
+          name: mongodb
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-sec
+              key: username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-sec
+              key: password
+        - name: MONGO_INITDB_DATABASE
+          value: "admin"
+        volumeMounts:
+        - name: mongodb-data
+          mountPath: /data/db
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+        livenessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - mongosh
+            - --eval
+            - "db.adminCommand('ping')"
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      volumes:
+      - name: mongodb-data
+        persistentVolumeClaim:
+          claimName: mongo-volume-claim
+      restartPolicy: Always

@@ -10,3 +10,4 @@ spec:
     name: mongodb
   selector:
     app: mongodb
+  type: ClusterIP
