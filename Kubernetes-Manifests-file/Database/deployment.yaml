@@ -45,7 +45,6 @@ spec:
               key: password
         - name: MONGO_INITDB_DATABASE
           value: "admin"
-        
         volumeMounts:
         - name: mongodb-data
           mountPath: /data/db
