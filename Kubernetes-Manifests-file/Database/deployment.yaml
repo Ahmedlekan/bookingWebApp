@@ -22,15 +22,13 @@ spec:
         app: mongodb
         tier: database
     spec:
+      securityContext:
+        fsGroup: 999  # For EBS volume permissions
       containers:
       - name: mongodb
         image: mongo:5.0
-        imagePullPolicy: IfNotPresent
         args:
           - "--bind_ip_all"
-          - "--auth"
-          - "--storageEngine"
-          - "wiredTiger"
         ports:
         - containerPort: 27017
           name: mongodb
@@ -47,20 +45,22 @@ spec:
               key: password
         - name: MONGO_INITDB_DATABASE
           value: "admin"
+        
         volumeMounts:
         - name: mongodb-data
           mountPath: /data/db
+        securityContext:  # SINGLE securityContext block
+          runAsUser: 999
+          runAsGroup: 999
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
         resources:
           requests:
             memory: "512Mi"
             cpu: "250m"
           limits:
             memory: "1Gi"
-            cpu: "500m"
-        securityContext:
-          runAsNonRoot: true
-          runAsUser: 1000
-          allowPrivilegeEscalation: false
+            cpu: "500m"  
         livenessProbe:
           tcpSocket:
             port: 27017
