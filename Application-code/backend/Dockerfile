@@ -29,7 +29,6 @@ USER nodejs
 EXPOSE 3000
 CMD ["npm", "start"]
 
-
 # BUILD AND RUN
 
 # docker build -t backend-optimized .
