@@ -5,7 +5,8 @@ metadata:
   namespace: mern-tier
 spec: 
   ports:
-  - port: 3500
+  - port: 80
+    targetPort: 3000
     protocol: TCP
   type: ClusterIP
   selector:
