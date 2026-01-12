@@ -1,18 +1,9 @@
 # Stage 1: Build the React app
 FROM node:20 AS build
-
 WORKDIR /usr/src/app
-
-# Copy package files
 COPY package*.json ./
-
-# Install all dependencies (including devDependencies for build)
 RUN npm install
-
-# Copy source code
 COPY . .
-
-# Build the React app
 RUN npm run build
 
 # Stage 2: Serve with Nginx
