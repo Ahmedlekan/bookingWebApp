@@ -5,7 +5,7 @@ metadata:
   namespace: three-tier
   labels:
     role: api
-    env: demo
+    env: dev
 spec:
   replicas: 2
   strategy:
@@ -27,11 +27,30 @@ spec:
       - name: backend-mern-tier
         image: 314146307160.dkr.ecr.us-east-1.amazonaws.com/backend-mern-tier:2
         imagePullPolicy: Always        
+        env:
+          - name: MONGO_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: backend-secrets
+                key: MONGO_CONNECTION_STRING
+          - name: JWT_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: backend-secrets
+                key: JWT_SECRET_KEY
+          - name: CLOUDINARY_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: backend-secrets
+                key: CLOUDINARY_API_SECRET
+          - name: STRIPE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: backend-secrets
+                key: STRIPE_API_KEY
         envFrom:
           - configMapRef:
               name: backend-config
-          - secretRef:
-              name: backend-secrets
         ports:
         - containerPort: 3000
         resources:
