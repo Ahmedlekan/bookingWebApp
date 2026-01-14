@@ -116,7 +116,7 @@ const  uploadImages = async (imageFiles: Express.Multer.File[])=>{
     // Upload the images to Cloudinary
     const uploadPromises = imageFiles.map(async (image) => {
         // Convert the image buffer to a base64-encoded string
-        const b64 = Buffer.from(image.buffer).toString("base64")
+        const b64 = image.buffer.toString("base64")
         // Construct a data URI with the image's MIME type
         let dataURI = "data:" + image.mimetype + ";base64," + b64;
         // Upload the image to Cloudinary and await the response
