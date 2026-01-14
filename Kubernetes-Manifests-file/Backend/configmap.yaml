@@ -2,9 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: backend-config
-  namespace: mern-tier
+  namespace: three-tier
 data:
   PORT: "3000"
-  FRONTEND_URL: "https://frontend.yourdomain.com"
+  FRONTEND_URL: "http://localhost:3000"
   CLOUDINARY_CLOUD_NAME: "dnodnzm2p"
   CLOUDINARY_API_KEY: "295124719844263"
