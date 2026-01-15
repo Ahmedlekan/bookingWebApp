@@ -26,7 +26,7 @@ RUN chown -R nodejs:nodejs .
 USER nodejs
 
 EXPOSE 3000
-CMD ["npm", "dist/index.js"]
+CMD ["npm", "start"]
 
 # docker build -t backend-optimized .
 # docker run -d -p 7000:3000 --name backend-container backend-optimized
