@@ -5,7 +5,7 @@ metadata:
   namespace: three-tier
   labels:
     role: frontend-tier
-    env: demo
+    env: dev
 spec: 
   replicas: 2
   strategy:
@@ -27,12 +27,8 @@ spec:
       - name: frontend-mern-tier
         image: 314146307160.dkr.ecr.us-east-1.amazonaws.com/frontend-mern-tier:8
         imagePullPolicy: Always
-        envFrom:
-          - configMapRef:
-              name: frontend-config
         ports:
         - containerPort: 80
- 
         resources:
           requests:
             cpu: "100m"
