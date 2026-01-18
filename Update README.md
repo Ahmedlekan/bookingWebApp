@@ -333,11 +333,18 @@ Click Create
 
 - Install terraform plugin
 
-- Go to Manage Jenkins → Tools
+- Go to **Dashboard** -> **Manage Jenkins** -> **Tools**
 
 - On your machine, type ```whereis terraform``` you are going to get directory where terraform in stored, copy it and paste it in your jenkins ```/usr/bin/terraform```
 
 <img width="1514" height="558" alt="Image" src="https://github.com/user-attachments/assets/25d08fcd-fb98-42e3-8b1d-3cae5f63ae06" />
+
+
+
+
+
+
+
 
 ***Terraform EKS Cluster Deployment***
 
@@ -759,7 +766,52 @@ Final Snippet of all Credentials that we needed to implement this project.
 
 
 
+### step 9: Install the required plugins and configure the plugins to deploy our Three-Tier Application
 
+Install the following plugins by going to **Dashboard** -> **Manage Jenkins** -> **Plugins** -> **Available Plugins**
+
+- Docker
+- Docker Commons
+- Docker Pipeline
+- Docker API
+- Docker-build-step
+- NodeJS
+- OWASP Dependency-Check
+- SonarQube Scanner
+
+<img width="653" height="345" alt="Image" src="https://github.com/user-attachments/assets/2c4438d7-cd83-4030-84ec-54087cb3b7e3" />
+
+
+Now, we have to configure the installed plugins.
+
+Go to **Dashboard** -> **Manage Jenkins** -> **Tools**
+
+We are configuring SonarQube scanner
+
+Search for SonarQube scanner and provide the configuration like the snippet below.
+
+<img width="1248" height="460" alt="Image" src="https://github.com/user-attachments/assets/ab077fc2-5cf4-4143-81c9-2f656b7ea593" />
+
+
+Now, we will configure **nodejs**
+
+Search for the node and provide the configuration, like the snippet below.
+
+<img width="1238" height="622" alt="Image" src="https://github.com/user-attachments/assets/56e9655c-c1c2-4622-bd3c-ddf1f0c1814b" />
+
+
+Now, we will configure the OWASP Dependency Check
+
+Search for **Dependency-Check** and provide the configuration like the snippet below.
+
+<img width="1242" height="450" alt="Image" src="https://github.com/user-attachments/assets/ca1b81e4-fbcc-4c68-aa3f-7180c8fa6b22" />
+
+
+Now, we will configure the Docker
+
+Search for **Docker** and provide the configuration like the snippet below.
+
+<img width="1243" height="478" alt="Image" src="https://github.com/user-attachments/assets/c32f0495-ffae-4ec8-87ba-7d2a565872e0" />
 
 
 
