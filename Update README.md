@@ -340,12 +340,6 @@ Click Create
 <img width="1514" height="558" alt="Image" src="https://github.com/user-attachments/assets/25d08fcd-fb98-42e3-8b1d-3cae5f63ae06" />
 
 
-
-
-
-
-
-
 ***Terraform EKS Cluster Deployment***
 
 Check the github file for the EKS terraform file
@@ -814,13 +808,481 @@ Search for **Docker** and provide the configuration like the snippet below.
 <img width="1243" height="478" alt="Image" src="https://github.com/user-attachments/assets/c32f0495-ffae-4ec8-87ba-7d2a565872e0" />
 
 
+Now, we have to set the path for SonarQube in Jenkins
+
+Go to **Dashboard** -> **Manage Jenkins** -> **System**
+
+Search for SonarQube installations
+
+Provide the name as it is, then in the Server URL, copy the SonarQube public IP (same as Jenkins) or if you have a saperate EC2 for your sonarqube, with port 9000, select the Sonar token that we have added recently, and click on Apply & Save.
+
+<img width="1527" height="744" alt="Image" src="https://github.com/user-attachments/assets/3a79eebb-bbb1-4cff-8101-0a24d9cb3a0a" />
+
+
+Now, we are ready to create our Jenkins Pipeline to deploy our Backend Code.
+
+Go to Jenkins Dashboard
+
+Click on **New Item**
+
+<img width="1374" height="758" alt="Image" src="https://github.com/user-attachments/assets/88854e44-b673-4d62-a3ab-ba69f9632222" />
+
+Provide the name of your Pipeline and click on OK.
+
+This is the configuration to deploy the Backend Code on EKS. The Pipeline is is **Jenkins-Pipeline-Code/Jenkinsfile-Backend** folder
+
+<img width="1293" height="725" alt="Image" src="https://github.com/user-attachments/assets/652094d4-d74f-460b-81e0-1e5bb849da6c" />
+
+<img width="1236" height="799" alt="Image" src="https://github.com/user-attachments/assets/f986b80e-da1a-4a0c-ac2c-76c396803c69" />
+
+Click Apply & Save.
+
+Now, click on the **build**.
+
+The pipeline was successful after addressing a few common mistakes.
+
+Note: Do the changes in the Pipeline according to your project.
+
+<img width="1892" height="865" alt="Image" src="https://github.com/user-attachments/assets/554c0d14-72cd-42e2-a981-67f8e35ace43" />
+
+
+Now, we are ready to create our Jenkins Pipeline to deploy our Frontend Code.
+
+Go to Jenkins Dashboard
+
+Click on **New Item**
+
+<img width="1017" height="790" alt="Image" src="https://github.com/user-attachments/assets/b4a81763-59db-4ce5-a476-c07d410f1fd4" />
+
+Provide the name of your Pipeline and click on OK.
+
+This is the configuration to deploy the Frontend Code on EKS. The Pipeline is is **Jenkins-Pipeline-Code/Jenkinsfile-Frontend** folder
+
+<img width="1292" height="667" alt="Image" src="https://github.com/user-attachments/assets/99d75271-d884-47c6-9363-04fad085e6a4" />
+
+<img width="1249" height="768" alt="Image" src="https://github.com/user-attachments/assets/ed1346dc-c087-4371-bdb4-3bf18dcdbd47" />
+
+Now, click on the **build**.
+
+The pipeline was successful after a few common mistakes.
+
+Note: Do the changes in the Pipeline according to your project.
+
+<img width="1880" height="863" alt="Image" src="https://github.com/user-attachments/assets/cefc4c98-729b-4e1d-b24c-da68857a3063" />
+
+
+## Step 10: We will deploy our Three-Tier Application using ArgoCD.
+
+Our repository is public. So, we need to configure the repository in ArgoCD.
+
+Click on **Settings** and select **Repositories**
+
+<img width="1274" height="500" alt="Image" src="https://github.com/user-attachments/assets/debbc3f9-48e1-469e-8f2a-214ebcc2a18a" />
+
+Click on **CONNECT REPO USING HTTPS**
+
+Now, provide the repository name where your Manifest files are present.
+
+If your Connection Status is Successful, it means the repository connected successfully.
+
+<img width="1898" height="565" alt="Image" src="https://github.com/user-attachments/assets/65f50097-55b5-46c2-924e-78a7db50c8dd" />
+
+
+Now, we will create our first application, which will be a database.
+
+Click on **CREATE APPLICATION.**
+
+<img width="1287" height="369" alt="Image" src="https://github.com/user-attachments/assets/9a7aac7a-867f-4327-b67e-c11170386228" />
+
+Provide the details as it is provided in the snippet below and scroll down.
+
+<img width="1497" height="881" alt="Image" src="https://github.com/user-attachments/assets/c83d03c8-f1b7-4c92-8b18-1519a0f09902" />
+
+<img width="1479" height="821" alt="Image" src="https://github.com/user-attachments/assets/cb057183-3f7b-4ef3-8240-4faf12d0a45d" />
+
+After creating, your database should show this
+
+<img width="1856" height="749" alt="Image" src="https://github.com/user-attachments/assets/747f05d1-34a7-4a16-8e20-fea641bacb23" />
+
+
+We will create an application for the backend. Provide the details as it is provided in the snippet below and scroll down.
+
+<img width="1477" height="843" alt="Image" src="https://github.com/user-attachments/assets/9c58c2ff-3bff-49b3-b604-b42bb7bbba49" />
+
+Select the same repository that you configured in the earlier step.
+
+In the Path, provide the location where your Manifest files are presented and provide other things as shown in the screenshot below.
+
+<img width="1483" height="818" alt="Image" src="https://github.com/user-attachments/assets/4243d616-627f-4c97-ba96-a7e67acb9186" />
+
+Click on **CREATE**.
+
+After creating, your backend should show this
+
+<img width="1916" height="764" alt="Image" src="https://github.com/user-attachments/assets/676a810a-1001-4d48-84bf-9d1decdc9880" />
+
+***Populate secrets at creation time***
+
+```bash
+kubectl create secret generic backend-secrets \
+  -n three-tier \
+  --from-literal=MONGO_CONNECTION_STRING="mongodb://mongodb:27017/appdb" \
+  --from-literal=JWT_SECRET_KEY="super-secret-jwt-key" \
+  --from-literal=CLOUDINARY_API_SECRET="cloudinary-secret" \
+  --from-literal=STRIPE_API_KEY="stripe-key"
+```
+✅ No secrets in Git
+
+✅ Safe
+
+✅ Standard in production
+
+```bash
+kubectl apply -f secret.yaml
+```
+
+You must restart pods:
+
+```bash
+kubectl rollout restart deployment api -n three-tier
+```
+
+```bash
+kubectl logs deployment/api -n three-tier
+```
+
+Expected: "Server running on port 3000"
+
+We will create an application for the frontend. Provide the details as it is provided in the snippet below and scroll down.
+
+<img width="1455" height="795" alt="Image" src="https://github.com/user-attachments/assets/9280df6a-e979-45e9-a942-000cab830f2f" />
+
+Select the same repository that you configured in the earlier step.
+
+In the Path, provide the location where your Manifest files are presented and provide other things as shown in the screenshot below.
+
+<img width="1467" height="732" alt="Image" src="https://github.com/user-attachments/assets/a2e0fd78-f18a-432e-8313-c484e462e956" />
+
+Click on **CREATE**.
+
+After creating, your frontend should show this
+
+<img width="1912" height="625" alt="Image" src="https://github.com/user-attachments/assets/45e014de-b57f-40e8-a357-b95003b11671" />
+
+
+Go to your bastian host to confirm all the services are been created and running successfully.
+
+```bash
+kubectl get pod -n three-tier
+```
+or
+
+```bash
+kubectl get all -n three-tier
+```
+
+<img width="824" height="209" alt="Image" src="https://github.com/user-attachments/assets/0021808a-96cd-43e8-b7b8-11b93d56547e" />
+
+
+We will create an application for the Ingress. Provide the details as it is provided in the snippet below and scroll down.
+
+<img width="1480" height="817" alt="Image" src="https://github.com/user-attachments/assets/0358fa8e-6802-4085-a4a5-cdabc49e4f85" />
+
+Select the same repository that you configured in the earlier step.
+
+In the Path, provide the location where your Manifest files are presented and provide other things as shown in the screenshot below.
+
+<img width="1487" height="863" alt="Image" src="https://github.com/user-attachments/assets/1dcfdb94-6cab-43f7-b002-4b6f952f8ab4" />
+
+After creating, your Ingress should show this
+
+<img width="1850" height="635" alt="Image" src="https://github.com/user-attachments/assets/f470e301-c223-4d5d-8d7a-5dc82920643f" />
+
+Once your Ingress application is deployed. It will create an ***Application Load Balancer***
+
+You can check out the load balancer named k8s-three.
+
+<img width="1889" height="748" alt="Image" src="https://github.com/user-attachments/assets/4101ebd7-52b5-4f66-b885-58defc7f7efe" />
+
+You can see all 4 application deployments in the snippet below.
+
+<img width="1904" height="845" alt="Image" src="https://github.com/user-attachments/assets/699e4d72-e1f8-43b7-b37d-6788b3c68f81" />
+
+I bought my doman on amazon, you can get your domain name from any sources you prefer and configure it.
+
+You must point the domain to the ALB.
+
+***Create Route 53 record***
+
+In Route 53 → Hosted zones → animalskoala.com
+
+Create a **record:**
+
+<img width="794" height="380" alt="Image" src="https://github.com/user-attachments/assets/19372f10-1c9a-4d66-a00d-2c361f82178e" />
+
+Alias record - Setting	Value
+
+- Record name	(blank)
+- Record type	A – IPv4 address
+- Alias	ON
+- Alias target	ALB DNS name - The region you created the LoadBalancer
+- Routing policy	Simple
+
+✅ This is the recommended AWS way
+
+<img width="1871" height="774" alt="Image" src="https://github.com/user-attachments/assets/7f3e0ccb-b2ff-4230-b890-6acc5d191287" />
+
+Click on **create record**
+
+Now, hit your domain after 2 to 3 minutes in your browser to see the magic.
+
+<img width="1882" height="876" alt="Image" src="https://github.com/user-attachments/assets/0120f9e7-56e6-4d4c-86f5-49f620bdb9e5" />
+
+
+Setup 10: We will set up the Monitoring for our EKS Cluster. We can monitor the Cluster Specifications and other necessary things.
+
+We will achieve the monitoring using Helm
+
+**Install Metric Server**
+
+- Metric server install thru helm chart
+
+```bash
+https://artifacthub.io/packages/helm/metrics-server/metrics-server
+```
+
+verify metric server.
+
+```bash
+kubectl get pods -w
+kubectl top pods
+```
+
+**Monitoring Using kube-prometheus-stack**
+
+Create a namespace “three-tier-monitoring”
+
+```bash
+kubectl create ns three-tier-monitoring
+```
+Use this aritfact hub to install the prometheus-stack
+
+```bash
+https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+```
+
+Click on **install**
+
+<img width="1882" height="799" alt="Image" src="https://github.com/user-attachments/assets/9de9f061-fed6-4eee-9bdc-de927e7ab651" />
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+```
+
+```bash
+helm install monitoring prometheus-community/kube-prometheus-stack --namespace three-tier-monitoring
+```
+
+Verify deployment :
+
+```bash
+kubectl get pods -n three-tier-monitoring
+```
+
+Get the helm values and save it in a file
+
+```bash
+helm show values prometheus-community/kube-prometheus-stack > kube-prom-stack.yaml
+```
+
+edit the file and add the following in the params for prometheus, grafana and alert manger.
+
+Edit the file using this code
+
+```bash
+vi kube-prom-stack.yaml
+```
+
+<img width="1893" height="797" alt="Image" src="https://github.com/user-attachments/assets/8169e01c-57d8-438b-b4b4-f658d2ef159f" />
+
+**Grafana:**
+
+Search for grafana.domain
+
+<img width="1590" height="791" alt="Image" src="https://github.com/user-attachments/assets/897163b4-7fdf-48e7-a786-2ca9f66a7931" />
+
+ - Change the host to grafana.yourdomain and remove the comment from the path
+
+For the **annotaion**, use this code
+
+Use this if you have HTTPS configure for your domain and make sure the certificate-arn is from your aws
+
+```bash
+annotations:
+    alb.ingress.kubernetes.io/group.name: bookingweb-app-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:876997124628:certificate/b69bb6e7-cbd1-490b-b765-27574080f48c
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+```
+
+Use this if you only have HTTP for your domain
+
+```bash
+alb.ingress.kubernetes.io/group.name: bookingweb-app-lb
+alb.ingress.kubernetes.io/scheme: internet-facing
+alb.ingress.kubernetes.io/target-type: ip
+alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+```
+
+<img width="1066" height="679" alt="Image" src="https://github.com/user-attachments/assets/07a3e5aa-7068-41f8-93bd-580b613daeb2" />
+
+
+**Prometheus:**
+
+Search for prometheus.domain
+
+ - Change the host to prometheus.yourdomain and remove the comment from the path
+
+For the **annotaion**, use this code
+
+Use this if you have HTTPS configure for your domain and make sure the certificate-arn is from your aws
+
+```bash
+annotations:
+    alb.ingress.kubernetes.io/group.name: bookingweb-app-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:876997124628:certificate/b69bb6e7-cbd1-490b-b765-27574080f48c
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+```
+Change the Pathtype: Prefix
+
+Use this if you only have HTTP configured for your domain
+```bash
+alb.ingress.kubernetes.io/group.name: bookingweb-app-lb
+alb.ingress.kubernetes.io/scheme: internet-facing
+alb.ingress.kubernetes.io/target-type: ip
+alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+```
+
+**AlertManager:**
+
+Search for alertmanager.domain
+
+ - Change the host to alertmanager.yourdomain and remove the comment from the path
+
+For the **annotaion**, use this code
+
+Use this if you have HTTPS configure for your domain and make sure the certificate-arn is from your aws
+
+```bash
+annotations:
+    alb.ingress.kubernetes.io/group.name: bookingweb-app-lb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+```
+Change the Pathtype: Prefix
+
+Use this if you only have HTTP configured for your domain
+```bash
+alb.ingress.kubernetes.io/group.name: bookingweb-app-lb
+alb.ingress.kubernetes.io/scheme: internet-facing
+alb.ingress.kubernetes.io/target-type: ip
+alb.ingress.kubernetes.io/backend-protocol: HTTP
+alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+```
+
+Save it by using **ESC** to get out of the insert, and use **:wq** to save
+
+Upgrade it by using
+
+```bash
+helm upgrade monitoring prometheus-community/kube-prometheus-stack -f kube-prom-stack.yaml -n three-tier-monitoring
+```
+Now run
+
+```bash
+kubectl get ingress -n three-tier-monitoring
+```
+
+<img width="1895" height="262" alt="Image" src="https://github.com/user-attachments/assets/ab326033-a24a-45e9-95b5-8a460592f298" />
+
+You should see the alertmanager, grafana, and prometheus running
+
+Go to your aws Loadbalancer, you should see this
+
+<img width="1870" height="749" alt="Image" src="https://github.com/user-attachments/assets/2913b645-d124-472d-820b-e06ab8a98ebc" />
+
+Now, we have to confidure our doamin name on **Route53**, so that we can access our alertmanager, prometheus and grafana.
+
+Go to **Route53**
+
+<img width="888" height="460" alt="Image" src="https://github.com/user-attachments/assets/1a8b2418-f18c-499b-a512-8802bdae9833" />
+
+Click on the doamin to **create record**
+
+Record Name - Grafana
+
+Record type - CNAME
+
+Value - Copy your Loadbalancer url and paste it there
+
+**Create record**
+
+<img width="1858" height="733" alt="Image" src="https://github.com/user-attachments/assets/b56c4e1d-3fcb-4393-9651-4d4ed6aeb533" />
+
+This means, you can now access your grafana from grafana.yourdomain
+
+Now, follow the same process for **prometheus** and **alertManager**
+
+Now, we can access our grafana from http://grafana.yourdomain
+
+For login in to your grafana;
+
+Username: admin
+
+Password: use this code to get your password
+
+```bash
+Password: kubectl --namespace three-tier-monitoring get secrets my-kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+```
+<img width="1889" height="840" alt="Image" src="https://github.com/user-attachments/assets/f90c880d-37c8-4509-b2e4-0fcd365c6013" />
+
+Now, you can see your Grafana Dashboard to view the EKS data, such as pods, namespace, deployments, etc.
+
+Access your **prometheus** from http://prometheus.yourdomain
+
+<img width="1911" height="869" alt="Image" src="https://github.com/user-attachments/assets/fd0a5eba-1823-4e2e-b37b-1512d79c40cb" />
+
+
+Access your **alertmanager** from http://alertmanager.yourdomain
+
+<img width="1889" height="846" alt="Image" src="https://github.com/user-attachments/assets/9f9d8183-5c83-4603-895d-011a38de0e22" />
 
 
 
+**Conclusion**
 
+In this comprehensive DevSecOps Kubernetes project, we successfully:
 
+Established IAM user and Terraform for AWS setup.
 
+Deployed Jenkins on AWS, configured tools, and integrated it with SonarQube.
 
+Set up an EKS cluster, configured a Load Balancer, and established private ECR repositories, but we used a public repository just to make it easier to follow.
 
+Implemented monitoring with Helm, Prometheus, Grafana and Alert Manager.
+
+Installed and configured ArgoCD for GitOps practices.
+
+Created Jenkins pipelines for CI/CD, deploying a Three-Tier application.
+
+Ensured data persistence with persistent volumes and claims.
 
 
