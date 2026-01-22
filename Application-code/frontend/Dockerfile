@@ -24,3 +24,10 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
+
+#Build the Image
+# docker build \
+#   --build-arg VITE_API_BASE_URL=http://api:3000 \
+#   --build-arg VITE_STRIPE_PUB_KEY=pk_test_xxx \
+#   -t frontend-mern-tier:latest .
+

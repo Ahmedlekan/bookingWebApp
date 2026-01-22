@@ -28,6 +28,7 @@ spec:
         image: 314146307160.dkr.ecr.us-east-1.amazonaws.com/backend-mern-tier:5
         imagePullPolicy: Always        
         env:
+          # Explicit secret mapping
           - name: MONGO_CONNECTION_STRING
             valueFrom:
               secretKeyRef:
@@ -48,6 +49,7 @@ spec:
               secretKeyRef:
                 name: backend-secrets
                 key: STRIPE_API_KEY
+          # Explicit secret mapping
         envFrom:
           - configMapRef:
               name: backend-config
@@ -84,3 +86,11 @@ spec:
           failureThreshold: 30
 
   
+
+# Create secret from CLI
+# kubectl create secret generic backend-secrets \
+#   -n three-tier \
+#   --from-literal=MONGO_CONNECTION_STRING="mongodb://mongodb:27017/appdb" \
+#   --from-literal=JWT_SECRET_KEY="super-secret-jwt-key" \
+#   --from-literal=CLOUDINARY_API_SECRET="cloudinary-secret" \
+#   --from-literal=STRIPE_API_KEY="stripe-key"
