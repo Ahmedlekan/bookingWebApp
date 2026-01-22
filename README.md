@@ -364,26 +364,33 @@ EKS-Cluster-Tf/
 └── terraform/
 
   ├── backend-dev.hcl          # S3 backend config for dev
+  
   ├── backend-prod.hcl         # S3 backend config for prod
 
   ├── terraform.tf             # Terraform + provider requirements
+  
   ├── variables.tf             # Input variables
+  
   ├── output.tf                # Outputs (cluster name, endpoint, OIDC, etc.)
 
   ├── main.tf                  # Root module wiring / locals / common resources
 
   ├── vpc.tf                   # VPC, subnets, IGW, NAT, route tables
+  
   ├── eks.tf                   # EKS cluster & managed node groups
 
   ├── iam.tf                   # IAM roles, policies, IRSA setup
+  
   ├── iam_policy.json          # Custom IAM policy document (used by iam.tf)
 
   ├── helm.tf                  # Helm provider + AWS Load Balancer Controller
 
   ├── bastian.tf               # Bastion host EC2 + security group
+  
   ├── bastion_user_data.sh     # Bastion bootstrap script (kubectl, awscli)
 
   ├── dev.tfvars               # Dev environment variables
+  
   └── prod.tfvars              # Prod environment variables
 
 
