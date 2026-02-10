@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.service.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    role: {{ .Values.labels.role }}
+    env: {{ .Values.labels.env }}
+    {{- include "three-tier-api.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      role: {{ .Values.labels.role }}
+      {{- include "three-tier-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        role: {{ .Values.labels.role }}
+        {{- include "three-tier-api.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Values.container.name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          {{- range .Values.secrets.keys }}
+          - name: {{ . }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.secrets.name }}
+                key: {{ . }}
+          {{- end }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.configMap.name }}
+        ports:
+        - containerPort: {{ .Values.container.port }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
+        readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
+        startupProbe:
+          {{- toYaml .Values.startupProbe | nindent 10 }}
+
+
+  
+
+# Create secret from CLI
+# kubectl create secret generic backend-secrets \
+#   -n three-tier \
+#   --from-literal=MONGO_CONNECTION_STRING="mongodb://mongodb:27017/appdb" \
+#   --from-literal=JWT_SECRET_KEY="super-secret-jwt-key" \
+#   --from-literal=CLOUDINARY_API_SECRET="cloudinary-secret" \
+#   --from-literal=STRIPE_API_KEY="stripe-key"
