@@ -1,11 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.configMap.name }}
-  namespace: {{ .Values.namespace }}
-  labels:
-    {{- include "three-tier-api.labels" . | nindent 4 }}
+  name: backend-config
+  namespace: three-tier
 data:
-  {{- range $key, $value := .Values.configMap.data }}
-  {{ $key }}: {{ $value | quote }}
-  {{- end }}
+  PORT: "3000"
+  FRONTEND_URL: "http://localhost:3000"
+  CLOUDINARY_CLOUD_NAME: "dnodnzm2p"
+  CLOUDINARY_API_KEY: "295124719844263"

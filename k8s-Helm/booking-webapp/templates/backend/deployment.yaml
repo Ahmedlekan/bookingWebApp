@@ -1,14 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.service.name }}
-  namespace: {{ .Values.namespace }}
+  name: api
+  namespace: three-tier
   labels:
-    role: {{ .Values.labels.role }}
-    env: {{ .Values.labels.env }}
-    {{- include "three-tier-api.labels" . | nindent 4 }}
+    role: api
+    env: dev
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -16,44 +15,75 @@ spec:
       maxUnavailable: 25%
   selector:
     matchLabels:
-      role: {{ .Values.labels.role }}
-      {{- include "three-tier-api.selectorLabels" . | nindent 6 }}
+      role: api
   template:
     metadata:
       labels:
-        role: {{ .Values.labels.role }}
-        {{- include "three-tier-api.selectorLabels" . | nindent 8 }}
+        role: api
     spec:
-      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      - name: ecr-registry-secret
       containers:
-      - name: {{ .Values.container.name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+      - name: backend-mern-tier
+        image: 314146307160.dkr.ecr.us-east-1.amazonaws.com/backend-mern-tier:5
+        imagePullPolicy: Always        
         env:
-          {{- range .Values.secrets.keys }}
-          - name: {{ . }}
+          # Explicit secret mapping
+          - name: MONGO_CONNECTION_STRING
             valueFrom:
               secretKeyRef:
-                name: {{ $.Values.secrets.name }}
-                key: {{ . }}
-          {{- end }}
+                name: backend-secrets
+                key: MONGO_CONNECTION_STRING
+          - name: JWT_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: backend-secrets
+                key: JWT_SECRET_KEY
+          - name: CLOUDINARY_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: backend-secrets
+                key: CLOUDINARY_API_SECRET
+          - name: STRIPE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: backend-secrets
+                key: STRIPE_API_KEY
+          # Explicit secret mapping
         envFrom:
           - configMapRef:
-              name: {{ .Values.configMap.name }}
+              name: backend-config
         ports:
-        - containerPort: {{ .Values.container.port }}
+        - containerPort: 3000
         resources:
-          {{- toYaml .Values.resources | nindent 10 }}
+            requests:
+              cpu: "150m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"        
         livenessProbe:
-          {{- toYaml .Values.livenessProbe | nindent 10 }}
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 2
+          periodSeconds: 5
+        
         readinessProbe:
-          {{- toYaml .Values.readinessProbe | nindent 10 }}
+          httpGet:
+            path: /ready
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+        
         startupProbe:
-          {{- toYaml .Values.startupProbe | nindent 10 }}
-
+          httpGet:
+            path: /started
+            port: 3000
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          failureThreshold: 30
 
   
 
