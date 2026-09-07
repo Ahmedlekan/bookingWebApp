@@ -1,6 +1,6 @@
 # 🚀 Advanced End-to-End DevSecOps Project: MERN Stack Three-Tier Application on AWS with Docker, Kubernetes, Terraform, ArgoCD, Jenkins, GitOps, SonarQube, Prometheus, Grafana and Alert manager
 
-<img width="3548" height="2813" alt="Image" src="https://github.com/user-attachments/assets/60937ab6-ab0b-467e-890b-f672bf3b7d75" />
+<img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/b04b8774-01a4-4515-9ed5-03c2b99b3401" />
 
 
 ### 📌 Introduction
